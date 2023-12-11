@@ -1,13 +1,27 @@
 const express=require('express');
+const body_parser = require('body-parser');
+require('dotenv').config();
+const announcement = require('../hastane/service/routes/AnnouncementRoutes');
+
+//DB connection
+const db = require('../hastane/config/database');
+
+db();
+//const blood_types = require('../hastane/service/seeder/bloodtypeseeder');
+//blood_types()
 const app=express();
 
-app.use(express.json());
+app.use(body_parser.json());
+
+app.use('/announcement',announcement);
+
 app.use('/',(req,res,next)=>{
     return res.status(200).json({
         "message":  "bu alan  hastane servisidir"
     });
 })
 
-app.listen(8004,()=>{
-   console.log("server is running on port 8004");
+const PORT = process.env.PORT || 8004;
+app.listen(PORT,()=>{
+   console.log(`Server is running on port ${PORT}`);
 });

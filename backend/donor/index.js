@@ -10,13 +10,17 @@ const donorRoutes = require('./service/routes/donorRoutes');
 app.use(bodyParser.json());
 
 // MongoDB bağlantısını yapılandır
-mongoose
+/* mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log('DB is connected'))
   .catch((err) => console.log(err));
+ */
+
+const db = require('../donor/config/database');
+db()
 
 // API rotalarını ekle
 app.use('/api/donors', donorRoutes);
