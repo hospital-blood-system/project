@@ -16,7 +16,6 @@ class AdminService{
                 personal_no: admin_register.personal_no,
                 sifre: yenisifre
             });
-            await admin.save();
             return admin;
         } catch (error) {
             return { error: error.message };

@@ -11,9 +11,8 @@ exports.login = async(req,res)=>{
 };
 
 exports.register=async(req,res)=>{
-    const admin = req.body
     try{
-        admin = await AdminService.Register(admin);
+        admin = await AdminService.Register(req.body);
         if(!admin){
             res.status(400).json({message:"Oluşturulamadı."});
         }

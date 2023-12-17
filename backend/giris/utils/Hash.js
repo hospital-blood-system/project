@@ -1,18 +1,9 @@
 const crypto = require('crypto');
 
-let generateSalt = (rounds) => {
-
-    if (rounds >= 15) {
-        throw new Error(`${rounds} is greater than 15, must be less than 15`);
-    }
-    if (typeof rounds !== 'number') {
-        throw new Error('Rounds param must be a number');
-    }
-    if (rounds == null) {
-        rounds = 12; 
-    }
-    const asd = crypto.randomBytes(Math.ceil(rounds / 2)).toString('hex').slice(0, rounds);
-    return asd;
+let generateSalt = () => {
+    const rounds = Math.floor(Math.random() * (12 - 5 + 1)) + 5;
+    const salt = crypto.randomBytes(Math.ceil(rounds / 2)).toString('hex').slice(0, rounds);
+    return salt;
 };
 
 let hasher = (password, salt) => {
@@ -32,7 +23,7 @@ let hash = (password) => {
     if (typeof password !== 'string') {
         throw new Error('password must be a string');
     }
-    const salt = generateSalt(10);
+    const salt = generateSalt();
     return hasher(password, salt);
 };
 
