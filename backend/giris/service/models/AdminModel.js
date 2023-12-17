@@ -21,6 +21,11 @@ const adminSchema = new Schema({
         type:Object,
         required:true
     },
+    hastane:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Hastane",
+        required:true,
+    }
 },{timestamps:true});
 
 module.exports=mongoose.model("Admin",adminSchema);
