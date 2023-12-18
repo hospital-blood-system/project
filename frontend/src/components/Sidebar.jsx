@@ -1,5 +1,7 @@
 // Sidebar.js
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 
 const Sidebar = () => {
   return (
@@ -18,43 +20,53 @@ const Sidebar = () => {
         <nav className="sidebar-nav scroll-sidebar" data-simplebar>
           <ul id="sidebarnav">
             <li className="sidebar-item">
-              <a className="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+              <a className="sidebar-link" href="/announcement" aria-expanded="false">
+              <Link to="/announcement" className="sidebar-link">
                 <span>
                   <i className="ti ti-article" />
                 </span>
-                <span className="hide-menu">İlan Olustur</span>
+                <span className="hide-menu">İlanlar</span>
+              </Link>
               </a>
             </li>
             <li className="sidebar-item">
-              <a className="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+              <a className="sidebar-link" href="/Donor" aria-expanded="false">
+              <Link to="/Donor" className="sidebar-link">
                 <span>
-                  <i className="ti ti-alert-circle" />
+                  <i className="ti ti-article" />
                 </span>
-                <span className="hide-menu">Kayitli Kisiler</span>
+                <span className="hide-menu">Donor</span>
+              </Link>
               </a>
             </li>
             <li className="sidebar-item">
-              <a className="sidebar-link" href="./ui-card.html" aria-expanded="false">
+              <a className="sidebar-link" href="/Statistic" aria-expanded="false">
+              <Link to="/Statistic" className="sidebar-link">
                 <span>
-                  <i className="ti ti-cards" />
+                  <i className="ti ti-article" />
                 </span>
-                <span className="hide-menu">Bilgiler</span>
+                <span className="hide-menu">İstatislikler</span>
+              </Link>
               </a>
             </li>
             <li className="sidebar-item">
-              <a className="sidebar-link" href="./ui-forms.html" aria-expanded="false">
+              <a className="sidebar-link" href="/AdminControll" aria-expanded="false">
+              <Link to="/AdminControll" className="sidebar-link">
                 <span>
-                  <i className="ti ti-file-description" />
+                  <i className="ti ti-article" />
                 </span>
-                <span className="hide-menu">Forms</span>
+                <span className="hide-menu">Hastane İşlemleri </span>
+              </Link>
               </a>
             </li>
             <li className="sidebar-item">
-              <a className="sidebar-link" href="./ui-typography.html" aria-expanded="false">
+              <a className="sidebar-link" href="/Settings" aria-expanded="false">
+              <Link to="/Settings" className="sidebar-link">
                 <span>
-                  <i className="ti ti-typography" />
+                  <i className="ti ti-article" />
                 </span>
-                <span className="hide-menu">Typography</span>
+                <span className="hide-menu">Ayarlar</span>
+              </Link>
               </a>
             </li>
           </ul>

@@ -1,6 +1,7 @@
 const express=require('express');
 const body_parser = require('body-parser');
 require('dotenv').config();
+const cors = require('cors');
 const announcement = require('../hastane/service/routes/AnnouncementRoutes');
 
 //DB connection
@@ -11,6 +12,7 @@ db();
 //blood_types()
 const app=express();
 
+app.use(cors());
 app.use(body_parser.json());
 
 app.use('/announcement',announcement);

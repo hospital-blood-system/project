@@ -81,13 +81,13 @@ const deleteAnnouncement = async(req,res)=>{
     const announcementId = req.params._id;
     try{
 
-        const announcement = await AnnouncementService.getAnnouncementById(announcementId);
+        const deleteAnnouncement = await AnnouncementService.deleteAnnouncement(announcementId);
 
-        if(!announcement){
+        if(!deleteAnnouncement){
             res.status(400).json({message:"İlan bulunamadi!"}); 
         }
 
-        const deleteAnnouncement = await AnnouncementService.deleteAnnouncement(announcementId);
+       
 
         res.status(200).json({message:"Basarili"});
     }catch(error){
