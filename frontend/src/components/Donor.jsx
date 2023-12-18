@@ -8,15 +8,12 @@ const Donor = () => {
 
   const columns = React.useMemo(
     () => [
-<<<<<<< HEAD
       { Header: 'ID', accessor: '_id' },
       { Header: 'Name', accessor: 'name' },
       { Header: 'Surname', accessor: 'surname' },
       { Header: 'Age', accessor: 'age' },
       { Header: 'Gender', accessor: 'male' },
       { Header: 'Blood Type', accessor: 'blood' },
-=======
->>>>>>> 5778b1f368d8e99e8de7f1a60113857d06cc576c
     ],
     []
   );
@@ -27,11 +24,7 @@ const Donor = () => {
 
   const getDonors = async () => {
     try {
-<<<<<<< HEAD
       const response = await axios.get('http://localhost:8003/api/donors');
-=======
-      const response = await axios.get('http://localhost:8003/donor/');
->>>>>>> 5778b1f368d8e99e8de7f1a60113857d06cc576c
       const indexedData = response.data.map((donor) => ({
         _id: donor._id,
         name: donor.name,
