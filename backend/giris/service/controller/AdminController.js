@@ -5,13 +5,13 @@ require('dotenv').config();
 
 exports.login = async (req, res) => {
     try {
-        const control = await AdminService.Login(req.body);
-
-        if (control.error) {
-            return res.status(400).json({ error: control.error });
+        console.log(req.body);
+        const admin = await AdminService.Login(req.body);
+        console.log(admin)
+        if (admin.error) {
+            return res.status(400).json({ error: admin.error });
         }
 
-        const admin = await AdminService.GetAdminByPersonalNo(req.body.personal_no);
         const admin_id = admin._id;
         const token = jwt.sign({admin_id}, process.env.JWT_SECRET,  { expiresIn: "15m" }); //Token oluşturma.
         

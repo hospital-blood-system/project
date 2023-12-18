@@ -25,6 +25,6 @@ const HastaneSchema = Schema({
         ref:'donors',
         required:false,
     }]
-});
+},{timestamps:true});
 
 module.exports=mongoose.model('Hastane',HastaneSchema);

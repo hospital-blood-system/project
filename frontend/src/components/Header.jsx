@@ -1,7 +1,26 @@
 // Header.js
 import React from 'react';
+import axios from 'axios'
 
 const Header = () => {
+
+  const logout= async()=>{
+    try {
+      const response = await axios.post("http://localhost:8002/admin/logout", {
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      if (response.error) {
+        console.error("Logout failed");
+      } else {
+        window.location.href = "/Login";
+      }
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+    }
+  }
+
   return (
     <header className="app-header">
       <nav className="navbar navbar-expand-lg navbar-light">
@@ -38,7 +57,7 @@ const Header = () => {
                     <i className="ti ti-list-check fs-6" />
                     <p className="mb-0 fs-3">My Task</p>
                   </a>
-                  <a href="./authentication-login.html" className="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                  <a href="/Login" className="btn btn-outline-primary mx-3 mt-2 d-block" onClick={logout}>Logout</a>
                 </div>
               </div>
             </li>

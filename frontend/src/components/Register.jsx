@@ -1,7 +1,56 @@
 import React  from "react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Register(){
+    const [ad, setAd] = useState("");
+    const [soyad, setSoyad] = useState("");
+    const [personalNo, setpersonalNo] = useState("");
+    const [sifre, setSifre] = useState("");
+    const [hastaneler, setHastaneler] = useState([]);
+    const [selectedHastane, setSelectedHastane] = useState("");
+    
+    const handleHastaneler= async()=>{
+      try {
+        const response = await axios.get('http://localhost:8002/hastane/');
+        setHastaneler(response.data);
+      } catch (error) {
+        console.error('Hastane bilgileri alınamadı.', error.message);
+      }
+    }
+
+    useEffect(() => {
+      handleHastaneler()
+    }, []);
+
+    const handleSubmit = async(e)=>{
+      e.preventDefault();
+      try{
+        const response = await axios.post('http://localhost:8002/admin/register',{
+          ad:ad,
+          soyad:soyad,
+          personal_no:personalNo,
+          sifre:sifre,
+          hastane: selectedHastane
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.error) {
+          console.error("Register failed");
+          window.location.href = "/Register";
+        } else {
+          window.location.href = "/Dashboard";
+        }
+
+      }catch(error){
+        console.log(error.message);
+      }
+    }
+
     return(
         <div>
        <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
@@ -15,23 +64,45 @@ function Register(){
                 <img src="/img/logos/dark-logo.svg" width={180} alt />
               </a>
               <p className="text-center">Your Social Campaigns</p>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="exampleInputtext1" className="form-label">Name</label>
-                  <input type="text" className="form-control" id="exampleInputtext1" aria-describedby="textHelp" />
+                  <label htmlFor="ad" className="form-label">Ad</label>
+                  <input type="text" className="form-control" name="ad" id="ad" aria-describedby="textHelp" value={ad || ''} onChange={ async(e) => setAd(e.target.value)}/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="exampleInputEmail1" className="form-label">Email Address</label>
-                  <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                  <label htmlFor="soyad" className="form-label">Soyad</label>
+                  <input type="text" className="form-control" name="soyad" id="soyad" aria-describedby="textHelp" value={soyad || ''} onChange={async(e) => setSoyad(e.target.value)}/>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="personal_no" className="form-label">Personel Numarası</label>
+                  <input type="text" className="form-control" id="personal_no" name="personal_no" aria-describedby="textHelp" value={personalNo || ''} onChange={async(e) => setpersonalNo(e.target.value)}/>
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-                  <input type="password" className="form-control" id="exampleInputPassword1" />
+                  <label htmlFor="exampleInputPassword1" className="form-label">Şifre</label>
+                  <input type="password" className="form-control" id="sifre" name="sifre" value={sifre || ''} onChange={async(e) => setSifre(e.target.value)}/>
                 </div>
-                <a href="./index.html" className="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign Up</a>
+                <div className="mb-4">
+                  <select
+                    className="form-select"
+                    id="hastane"
+                    name="hastane"
+                    value={selectedHastane}
+                    onChange={(e) => setSelectedHastane(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Hastane Seçiniz
+                    </option>
+                    {hastaneler.map((hastane) => (
+                      <option value={hastane._id}>
+                        {hastane.ad}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button className="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">Sign Up</button>
                 <div className="d-flex align-items-center justify-content-center">
                   <p className="fs-4 mb-0 fw-bold">Already have an Account?</p>
-                  <a className="text-primary fw-bold ms-2" href="./authentication-login.html"><Link to="/Dasboard">Sing in </Link></a>
+                  <a className="text-primary fw-bold ms-2" href="./authentication-login.html"> <Link to="/Login">Sing in</Link></a>
                 </div>
               </form>
             </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from "./components/Home";
-import Dasboard from "./components/Dasboard";
+import Dashboard from "./components/Dasboard";
 import Login from "./components/Login";
 import Register from './components/Register';
 import Announcement from './components/Announcement';
@@ -23,7 +23,7 @@ function App() {
         <Route path="/AdminControll" element={<AdminControll />} />
         <Route path="/Settings" element={<Settings />} />
         <Route path="/Statistic" element={<Statistic />} />
-        <Route path="/Dasboard" element={<Dasboard />} /> {/* Dashboard'ı ekleyin */}
+        <Route path="/Dashboard" element={<Dashboard />} /> {/* Dashboard'ı ekleyin */}
       </Routes>
     </Router>
   );

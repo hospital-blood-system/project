@@ -7,6 +7,7 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 const cors = require("cors");
 const adminRouter = require('../giris/service/routes/AdminRoutes');
+const hastaneRouter = require('../giris/service/routes/HastaneRoutes');
 
 const db = require('../giris/config/db');
 
@@ -18,9 +19,8 @@ db();
 const app = express();
 
 app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
-
-app.use(express.json());
+app.use(body_parser.urlencoded({ extended: true }));
+app.use(body_parser.json());
 app.use(cors());
 
 app.use(cookieParaser());
@@ -37,6 +37,7 @@ app.use(session({
 app.use(methodOverride('_method'));
 
 app.use('/admin',adminRouter)
+app.use('/hastane',hastaneRouter)
 
 app.use('/',(req,res)=>{
     return res.status(200).json({
