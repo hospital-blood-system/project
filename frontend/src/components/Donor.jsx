@@ -1,6 +1,7 @@
 import React from 'react';
 import Dashboard from './Dasboard'
-import { useTable } from 'react-table';
+import { useTable } from 'react-table'
+import axios from 'axios';
 
 const Donor = () => {
   // Veri örnekleri
@@ -22,7 +23,27 @@ const Donor = () => {
     ],
     []
   );
+  // Verileri yükle
+  React.useEffect(() => {
+    getDonors();
+  }, []);
 
+  const getDonors = async () => {
+    try {
+      const response = await axios.get('http://localhost:8034/donor/');
+      const indexedData = response.data.map((donor) => ({
+        id: donor.id,
+        name: donor.name,
+        email: donor.email,
+        phone: donor.phone,
+        bloodType: donor.bloodType,
+      }));
+      setData(indexedData); // Verileri güncelle
+    } catch (error) {
+      console.log(error);
+      console.log(error.message);
+    }
+  };
   const {
     getTableProps,
     getTableBodyProps,
