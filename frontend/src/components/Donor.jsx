@@ -7,9 +7,6 @@ const Donor = () => {
   // Veri örnekleri
   const data = React.useMemo(
     () => [
-      { firstName: 'John', lastName: 'Doe', age: 25 },
-      { firstName: 'Jane', lastName: 'Doe', age: 30 },
-      { firstName: 'Bob', lastName: 'Smith', age: 22 },
     ],
     []
   );
@@ -30,7 +27,7 @@ const Donor = () => {
 
   const getDonors = async () => {
     try {
-      const response = await axios.get('http://localhost:8034/donor/');
+      const response = await axios.get('http://localhost:8003/donor/');
       const indexedData = response.data.map((donor) => ({
         id: donor.id,
         name: donor.name,
