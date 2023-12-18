@@ -11,4 +11,5 @@ route.post('/', announcementController.addAnnouncement);
 route.put('/:_id', announcementController.updateAnnouncement);
 route.delete('/:_id', announcementController.deleteAnnouncement);
 
+
 module.exports = route;

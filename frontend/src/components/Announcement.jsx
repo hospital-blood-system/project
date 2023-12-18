@@ -147,18 +147,7 @@ const Announcement = () => {
         .catch((err) => {
           console.log(err);
         });
-    } else {
-      // Ekleme işlemi
-      axios
-        .post('http://localhost:8004/announcement/', selectedAnnouncement)
-        .then((res) => {
-          setAnnouncements((prevAnnouncements) => [...prevAnnouncements, res.data]);
-          setShowAddModal(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    } 
   };
 
   const handleAddModalOpen = () => {
@@ -185,23 +174,22 @@ const Announcement = () => {
         blood_type: selectedBloodType,
         hastane: selectedHastane,
       };
-
-      const response = await axios.post('http://localhost:8004/announcement/', newAnnouncement,{
-        headers:{
+  
+      const response = await axios.post('http://localhost:8004/announcement/', newAnnouncement, {
+        headers: {
           'Content-Type': 'application/json',
         },
-      })
-
-      if(response.data.error){
+      });
+  
+      if (response.data.error) {
         console.log(response.data.error);
-      }else {
+      } else {
         console.log('Duyuru başarıyla eklendi:', response.data);
         setShowAddModal(false);
         // Sayfayı yeniden yükle
-        window.location.reload();
+       window.location.reload();
       }
-  
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
