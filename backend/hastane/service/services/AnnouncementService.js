@@ -1,5 +1,7 @@
+const { json } = require('body-parser');
 const Announcement = require('../models/AnnouncementModel');
 const BloodType = require('../models/BloodTypeModel');
+const Hastane = require('../../../giris/service/models/HastaneModel');
 
 class AnnouncementService{
 
@@ -9,7 +11,7 @@ class AnnouncementService{
             const announcements = await Announcement.find().populate({path:"blood_type",select:"type"});
             return announcements;
         }catch(error){
-            throw error;
+            return json({error:error.message});
         }
     }
 
@@ -17,9 +19,12 @@ class AnnouncementService{
     static async getAnnouncemenetById(id){
         try{
             const announcement = await Announcement.findById(id);
+            if(!announcement){
+                return json({error:"Ilan bulunamadi"});
+            }
             return announcement;
         }catch(error){
-            throw error;
+            return json({error:error.message});
         }
     }
 
@@ -29,7 +34,7 @@ class AnnouncementService{
             const blood_types = await BloodType.find();
             return blood_types;
         }catch(error){
-            throw error;
+            return json({error:error.message});
         }
     }
 
@@ -37,19 +42,40 @@ class AnnouncementService{
     static async getBloodTypesById(id){
         try{
             const blood_types = await BloodType.findById(id);
+            if(!blood_types){
+                return json({error:"kan tipi bulunamadi."})
+            }
             return blood_types;
         }catch(error){
-            throw error;
+            return json({error:error.message});
         }
     }
 
     //İlan ekleme
     static async addAnnouncement(newAnnouncement){
         try{
-            const newAnn = await Announcement.create(newAnnouncement);
-            return newAnn;
+            const hastane = await Hastane.findById(newAnnouncement.hastane);
+            if(!hastane){
+                return json({error:"Hastane bulunamadi."});
+            }
+
+            const blood_type = await AnnouncementService.getBloodTypesById(newAnnouncement.blood_type);
+
+            if(blood_type.error){
+                return json({error:"Kan grubu bulunamadı"}); 
+            }
+
+            const newAnn = await Announcement.create({
+                title: newAnnouncement.title,
+                body: newAnnouncement.body,
+                blood_type: blood_type._id,
+                hastane: hastane._id
+            });
+
+            await newAnn.save();
+            return newAnn
         }catch(error){
-            throw error;
+            return json({error:error.message});
         }
     }
 
@@ -59,7 +85,7 @@ class AnnouncementService{
             const updateAnn = await Announcement.findByIdAndUpdate(id, updateAnnouncement, { new: true });
             return updateAnn;
         } catch (error) {
-            throw error;
+            return json({error:error.message});
         }
     }
 
@@ -69,7 +95,7 @@ class AnnouncementService{
             const deleteAnn = await Announcement.findByIdAndDelete(id);
             return deleteAnn;
         }catch(error){
-            throw error;
+            return json({error:error.message});
         }
     }
 }

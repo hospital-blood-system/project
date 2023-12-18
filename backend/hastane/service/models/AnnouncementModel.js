@@ -21,6 +21,11 @@ const AnnouncementModel = new Schema({
         type: Schema.Types.ObjectId,
         ref:"BloodType",
         required:true,
+    },
+    hastane:{
+        type: Schema.Types.ObjectId,
+        ref:"Hastane",
+        required:true,
     }
 },{timestamps:true});
 

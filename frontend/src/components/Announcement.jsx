@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTable, usePagination } from 'react-table';
 import axios from 'axios';
 import Dashboard from './Dasboard'
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, FormGroup, FormLabel } from 'react-bootstrap';
 
 const Announcement = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -11,6 +11,12 @@ const Announcement = () => {
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [hastaneler, setHastaneler] = useState([]);
+  const [selectedHastane, setSelectedHastane] = useState("");
+  const [bloodTypes, setBloodTypes] = useState([]);
+  const [selectedBloodType, setselectedBloodType] = useState("");
 
   const columns = useMemo(
     () => [
@@ -64,17 +70,48 @@ const Announcement = () => {
     },
     usePagination
   );
+  
+  //İlanları getirir
+  const handleAnnouncements = async()=>{
+    try{
+      const response = await axios
+        .get('http://localhost:8004/announcement/')
+        .then((res) => {
+          const indexedData = res.data;
+          setAnnouncements(indexedData);
+        })
+        .catch((err) => {
+          console.log(err);
+      });
+    }catch(error){
+      console.log(error.message);
+    }
+  }
+
+  //Hastaneleri getirir
+  const handleHastaneler= async()=>{
+    try {
+      const response = await axios.get('http://localhost:8002/hastane/');
+      setHastaneler(response.data);
+    } catch (error) {
+      console.error('Hastane bilgileri alınamadı.', error.message);
+    }
+  }
+
+  //Kan tipini getirir
+  const handleBloodTypes= async()=>{
+    try {
+      const response = await axios.get('http://localhost:8004/announcement/blood');
+      setBloodTypes(response.data);
+    } catch (error) {
+      console.error('Hastane bilgileri alınamadı.', error.message);
+    }
+  }
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8004/announcement/')
-      .then((res) => {
-        const indexedData = res.data;
-        setAnnouncements(indexedData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    handleAnnouncements();
+    handleHastaneler();
+    handleBloodTypes();
   }, []);
 
   const handleUpdate = (announcement) => {
@@ -139,22 +176,34 @@ const Announcement = () => {
     setShowUpdateModal(false);
   };
 
-  const handleAdd = () => {
-    const newAnnouncement = {
-      title: selectedAnnouncement?.title || '',
-      body: selectedAnnouncement?.body || '',
-      blood_type: { type: selectedAnnouncement?.blood_type?.type || '' },
-    };
+  const handleAdd = async(e) => {
+    e.preventDefault();
+    try{
+      const newAnnouncement = {
+        title: title,
+        body: body,
+        blood_type: selectedBloodType,
+        hastane: selectedHastane,
+      };
 
-    axios
-      .post('http://localhost:8004/announcement/', newAnnouncement)
-      .then((res) => {
-        setAnnouncements((prevAnnouncements) => [...prevAnnouncements, res.data]);
-        setShowAddModal(false);
+      const response = await axios.post('http://localhost:8004/announcement/', newAnnouncement,{
+        headers:{
+          'Content-Type': 'application/json',
+        },
       })
-      .catch((err) => {
-        console.log(err);
-      });
+
+      if(response.data.error){
+        console.log(response.data.error);
+      }else {
+        console.log('Duyuru başarıyla eklendi:', response.data);
+        setShowAddModal(false);
+        // Sayfayı yeniden yükle
+        window.location.reload();
+      }
+  
+    }catch(error){
+      console.log(error);
+    }
   };
 
   return (
@@ -209,38 +258,75 @@ const Announcement = () => {
             <Modal.Title>Yeni Duyuru Ekle</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Control
-              type="text"
-              placeholder="Başlık"
-              value={selectedAnnouncement?.title || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
-            />
-            <Form.Control
-              type="text"
-              placeholder="İçerik"
-              value={selectedAnnouncement?.body || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
-            />
-            <Form.Control
-              type="text"
-              placeholder="Kan Tipi"
-              value={selectedAnnouncement?.blood_type.type || ''}
-              onChange={(e) =>
-                setSelectedAnnouncement({
-                  ...selectedAnnouncement,
-                  blood_type: { type: e.target.value },
-                })
-              }
-            />
+            <Form onSubmit={handleAdd}>
+              <Form.Group controlId="formTitle">
+                <Form.Label>Başlık</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Başlık"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="formBody">
+                <Form.Label>İçerik</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="İçerik"
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="formBloodType">
+                <Form.Label>Kan Tipi</Form.Label>
+                <Form.Control
+                  as="select"
+                  placeholder="Kan Tipi"
+                  value={selectedBloodType}
+                  onChange={(e) => setselectedBloodType(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Kan Tipi Seçiniz
+                  </option>
+                  {bloodTypes.map((bloodType) => (
+                    <option  value={bloodType._id}>
+                      {bloodType.type}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+
+              <Form.Group controlId="formHastane">
+                <Form.Label>Hastane</Form.Label>
+                <Form.Control
+                  as="select"
+                  placeholder="Hastane"
+                  value={selectedHastane}
+                  onChange={(e) => setSelectedHastane(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Hastane Seçiniz
+                  </option>
+                  {hastaneler.map((hastane) => (
+                    <option  value={hastane._id}>
+                      {hastane.ad}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+                  Kapat
+                </Button>
+                <Button type="submit" variant="primary">
+                  Kaydet
+                </Button>
+              </Modal.Footer>
+            </Form>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowAddModal(false)}>
-              Kapat
-            </Button>
-            <Button variant="primary" onClick={handleAdd}>
-              Kaydet
-            </Button>
-          </Modal.Footer>
         </Modal>
 
         <Modal show={showUpdateModal} onHide={handleUpdateModalClose} centered>
