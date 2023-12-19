@@ -1,5 +1,7 @@
 import React  from "react";
 import { Link } from "react-router-dom";
+import ScrollToBottomButton from "./ScrollToBottomButton";
+import ScrollToCenterButton from "./ScrollToCenterButton.jsx";
 
 function Home(){
     
@@ -22,15 +24,15 @@ function Home(){
               <div className="main-menu">
                 <nav>
                   <ul id="navigation">
-                    <li><a href="index.html">Ev</a></li>
-                    <li><a href="About.html">Hakkimizda</a></li>
-                    <li><a href="#">Sayfalar</a></li>
-                    <li><a href="contact.html">İletişim</a></li>
+                    <li><a href="#">Ana Sayfa</a></li>
+                    <li><a><ScrollToCenterButton /></a></li>
+                    <li><a><ScrollToBottomButton/></a></li>
+                    
                   </ul>
                 </nav>
                 <div className="Appointment">
                   <div className="book_btn d-none d-lg-block">
-                  <Link to="/Login">Login</Link> {/* Link eklendi */}
+                  <Link to="/Login">Giriş</Link> {/* Link eklendi */}
                   </div>
                 </div>
               </div>
@@ -51,8 +53,8 @@ function Home(){
         <div className="row">
           <div className="col-lg-9">
             <div className="slider_text ">
-              <span>Bu Gün Kan Bağışla.</span>
-              <h3> Yarınlara Umut Olmak İçin Bu Gun Kan Bagışla</h3>
+              <span>Hayat Kurtar, Bugün Kan Bağışla!</span>
+              <h3>Güç Senin Kanında Saklı: Bağışla, Güç Ver!</h3>
               <a href="About.html" className="boxed-btn3">Daha Fazla</a>
             </div>
           </div>
