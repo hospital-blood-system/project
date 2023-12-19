@@ -3,24 +3,28 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const DonorSchema = new Schema({
-    name: {
+    ad: {
         type: String,
         required: true
     },
-    surname: {
+    soyad: {
         type: String,
         required: true
     },
-    age: {
+    yas: {
         type: Number,
         required: true
     },
-    male: {
+    cinsiyet: {
         type: Boolean,
         required: true
     },
-    blood: {
-        type: String,
+    blood_type: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    hastane: {
+        type: Schema.Types.ObjectId,
         required: true
     }
 });

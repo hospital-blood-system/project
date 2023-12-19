@@ -1,11 +1,25 @@
 const DonorModel = require('../models/donorModel');
+const mongoose = require('mongoose');
 
 class DonorService {
     // Tüm bağışçıları getir
     static async getAllDonors() {
         try {
             const donors = await DonorModel.find();
-            return donors;
+            const donorsWithHospitals = await Promise.all(donors.map(async (donor) => {
+                const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: donor.hastane });
+                const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: donor.blood_type });
+                //const hastaneAd = hastane ? hastane.ad : null;
+                return {
+                    ad: donor.ad,
+                    soyad: donor.soyad,
+                    yas: donor.yas,
+                    cinsiyet: donor.cinsiyet,
+                    blood_type: blood_type.type,
+                    hastane:hastane.ad
+                };
+            }));
+            return donorsWithHospitals;
         } catch (error) {
             throw error;
         }
@@ -15,7 +29,20 @@ class DonorService {
     static async getDonorById(id) {
         try {
             const donor = await DonorModel.findById(id);
-            return donor;
+
+            const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: donor.hastane });
+            const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: donor.blood_type });
+
+            const data = {
+                ad:donor.ad,
+                soyad:donor.soyad,
+                yas: donor.yas,
+                cinsiyet: donor.cinsiyet,
+                blood_type: blood_type.type,
+                hastane:hastane.ad
+            }
+
+            return data;
         } catch (error) {
             throw error;
         }
@@ -24,7 +51,19 @@ class DonorService {
     // Yeni bağışçı ekle
     static async addDonor(newDonor) {
         try {
-            const savedDonor = await DonorModel.create(newDonor);
+            console.log(newDonor);
+            const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(newDonor.hastane) });
+            const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(newDonor.blood_type) });
+            
+            const savedDonor = await DonorModel.create({
+                ad:newDonor.ad,
+                soyad:newDonor.soyad,
+                yas:newDonor.yas,
+                cinsiyet:newDonor.cinsiyet == 1 ? true:false,
+                blood_type:blood_type._id,
+                hastane:hastane._id,
+            });
+
             return savedDonor;
         } catch (error) {
             throw error;

@@ -24,9 +24,11 @@ db();
 
 // CORS middleware
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // API rotalarını ekle
-app.use('/api/donors', donorRoutes);
+app.use('/donor', donorRoutes);
 
 const PORT = process.env.PORT || 8003;
 app.listen(PORT, () => {
