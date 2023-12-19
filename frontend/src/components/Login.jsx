@@ -57,11 +57,11 @@ function Login(){
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Personal No</label>
-                  <input type="text" className="form-control" id="personal_no" name="personal_no" aria-describedby="textHelp" value={personalNo || ''} onChange={handlePersonalNo}/>
+                  <input type="text" className="form-control" id="personal_no" name="personal_no" aria-describedby="textHelp" value={personalNo} onChange={handlePersonalNo}/>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="sifre" className="form-label">Password</label>
-                  <input type="password" className="form-control" id="sifre" name="sifre" aria-describedby="textHelp" value={password || ''} onChange={handlePassword}/>
+                  <input type="password" className="form-control" id="sifre" name="sifre" aria-describedby="textHelp" value={password} onChange={handlePassword}/>
                 </div>
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="form-check">
