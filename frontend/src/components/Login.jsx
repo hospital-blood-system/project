@@ -7,6 +7,7 @@ function Login(){
 
   const [personalNo, setPersonalNo] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handlePersonalNo = async (e) =>{
     setPersonalNo(e.target.value);
@@ -28,14 +29,16 @@ function Login(){
         headers: {
           'Content-Type': 'application/json',
         },
+      }).then((res)=>{
+        if (res.error) {
+          console.alert(res.error);
+          setError(res.error);
+          //window.location.href = "/Login";
+        } else {
+          window.location.href = "/Dashboard";
+        }
       });
 
-      if (response.error) {
-        console.error("Login failed");
-        window.location.href = "/Login";
-      } else {
-        window.location.href = "/Dashboard";
-      }
     } catch (error) {
       console.error("An error occurred during login:", error);
     }
@@ -54,6 +57,7 @@ function Login(){
                 <img src="/img/logos/dark-logo.svg" width={180} alt />
               </a>
               <p className="text-center">Your Social Campaigns</p>
+              {error?<p className="text-danger">{error}</p>:null}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Personal No</label>

@@ -15,5 +15,6 @@ router.post('/register',AdminController.register);
 router.put('/:_id',authMiddleware,AdminController.update);
 router.delete('/:_id',authMiddleware,AdminController.delete);
 router.post('/logout', authMiddleware, AdminController.logout);
+router.get('/hastane/id', authMiddleware, AdminController.getHastaneFromToken);
 
 module.exports=router;

@@ -33,7 +33,6 @@ class AdminService{
     static async Login(admin_login){
         try{
             const admin = await Admin.findOne({personal_no:admin_login.personal_no})
-            console.log(admin);
             if(!admin){
                 return { error: "Admin Bulunamadi!" };
             }

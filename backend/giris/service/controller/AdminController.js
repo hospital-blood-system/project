@@ -1,19 +1,19 @@
 const AdminService = require('../services/AdminService');
+const Hastane = require('../models/HastaneModel');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 
 exports.login = async (req, res) => {
     try {
-        console.log(req.body);
         const admin = await AdminService.Login(req.body);
-        console.log(admin)
         if (admin.error) {
             return res.status(400).json({ error: admin.error });
         }
 
         const admin_id = admin._id;
-        const token = jwt.sign({admin_id}, process.env.JWT_SECRET,  { expiresIn: "15m" }); //Token oluşturma.
+        const hastane = admin.hastane;
+        const token = jwt.sign({admin_id:admin_id,hastane:hastane}, process.env.JWT_SECRET,  { expiresIn: "15m" }); //Token oluşturma.
         
         res.cookie('token',token, {httpOnly:true}); //tokeni res ile gönderirrr
         return res.status(200).json({message:"giris basarili"})
@@ -99,5 +99,35 @@ exports.logout = async (req, res) => {
         return res.status(200).json({message:"basarili"});
     } catch (error) {
         return res.status(400).json({ error: error.message });
+    }
+};
+
+exports.getHastaneFromToken = async (req, res) => {
+    try {
+        // Token'i isteğin başlıklarından alın
+        const token = req.cookies.token; // Örnek: "Bearer tokeniniz"
+        
+        if (!token) {
+            return res.status(401).json({ error: "Token bulunamadı." });
+        }
+
+        // Token'i doğrula
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Token içindeki hastane bilgisini al
+        const hastane = decodedToken.hastane;
+
+        if(!hastane){
+            return res.status(404).json({error:"Token bulunamadı."});
+        }
+
+        const hastane_model = await Hastane.findById(hastane);
+
+        return res.status(200).json(hastane_model);
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            return res.status(401).json({ error: "Token süresi doldu." });
+        }
+        return res.status(401).json({ error: "Token doğrulanamadı." });
     }
 };
