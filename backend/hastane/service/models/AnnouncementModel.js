@@ -24,7 +24,6 @@ const AnnouncementModel = new Schema({
     },
     hastane:{
         type: Schema.Types.ObjectId,
-        ref:"Hastane",
         required:true,
     }
 },{timestamps:true});

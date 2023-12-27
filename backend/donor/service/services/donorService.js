@@ -73,8 +73,23 @@ class DonorService {
     // ID'ye göre bağışçı güncelle
     static async updateDonorById(id, updatedDonor) {
         try {
-            const donor = await DonorModel.findByIdAndUpdate(id, updatedDonor, { new: true });
-            return donor;
+            const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(updatedDonor.hastane) });
+            const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(updatedDonor.blood_type) });
+    
+            const updatedDonor = await DonorModel.findByIdAndUpdate(
+                donorId,
+                {
+                    ad: updatedDonor.ad,
+                    soyad: updatedDonor.soyad,
+                    yas: updatedDonor.yas,
+                    cinsiyet: updatedDonor.cinsiyet == 1 ? true : false,
+                    blood_type: blood_type._id,
+                    hastane: hastane._id,
+                },
+                { new: true }
+            );
+    
+            return updatedDonor;
         } catch (error) {
             throw error;
         }
@@ -90,5 +105,6 @@ class DonorService {
         }
     }
 }
+
 
 module.exports = DonorService;

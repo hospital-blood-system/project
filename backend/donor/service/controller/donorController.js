@@ -32,6 +32,7 @@ const createDonor = async (req, res) => {
 const updateDonor = async (req, res) => {
     const donorId = req.params.id;
     const donorData = req.body;
+
     try {
         const updatedDonor = await donorService.updateDonorById(donorId, donorData);
         res.json(updatedDonor);

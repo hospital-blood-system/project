@@ -35,6 +35,7 @@ let compare = (password, hash) => {
         throw new Error('password must be a String and hash must be an Object');
     }
     let passwordData = hasher(password, hash.salt);
+    console.log(passwordData, hash);
     if (passwordData.hashedpassword === hash.hashedpassword) {
         return true;
     }

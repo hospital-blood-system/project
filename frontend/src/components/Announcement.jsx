@@ -3,6 +3,8 @@ import { useTable, usePagination } from 'react-table';
 import axios from 'axios';
 import Dashboard from './Dasboard'
 import { Modal, Button, Form, FormGroup, FormLabel } from 'react-bootstrap';
+const mongoose = require('mongoose');
+const { Types } = mongoose;
 
 const Announcement = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -17,6 +19,14 @@ const Announcement = () => {
   const [selectedHastane, setSelectedHastane] = useState("");
   const [bloodTypes, setBloodTypes] = useState([]);
   const [selectedBloodType, setselectedBloodType] = useState("");
+  const [updatedDonor, setUpdatedDonor] = useState({
+    ad: '',
+    soyad: '',
+    yas: '',
+    cinsiyet: '',
+    blood_type: { type: '' },
+    hastane: { name: '' },
+  });
 
   const columns = useMemo(
     () => [
@@ -30,7 +40,11 @@ const Announcement = () => {
       },
       {
         Header: 'Kan Tipi',
-        accessor: 'blood_type.type',
+        accessor: 'blood_type',
+      },
+      {
+        Header: 'Hastane ',
+        accessor: 'hastane',
       },
       {
         Header: 'İşlemler',
@@ -133,28 +147,62 @@ const Announcement = () => {
       });
   };
 
-  const handleModalSave = () => {
-    if (selectedAnnouncement) {
+  const handleModalSave = async () => {
+    if (selectedAnnouncement && selectedAnnouncement._id) {
       // Güncelleme işlemi
-      axios
-        .put(`http://localhost:8004/announcement/${selectedAnnouncement._id}`, selectedAnnouncement)
-        .then((res) => {
-          setAnnouncements((prevAnnouncements) =>
-            prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? selectedAnnouncement : item))
-          );
-          setShowUpdateModal(false);
-        })
-        .catch((err) => {
-          console.log(err);
+      const updatedAnnouncement = {
+        title: selectedAnnouncement.title,
+        body: selectedAnnouncement.body,
+        blood_type: Types.ObjectId(selectedAnnouncement.blood_type), // ObjectId'ye çevir
+        hastane: Types.ObjectId(selectedAnnouncement.hastane), // ObjectId'ye çevir
+      };
+  
+      try {
+        const response = await axios.put(`http://localhost:8004/announcement/${selectedAnnouncement._id}`, updatedAnnouncement);
+        setAnnouncements((prevAnnouncements) =>
+          prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? response.data : item))
+        );
+        setShowUpdateModal(false);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      // Yeni ekleme işlemi
+      const newAnnouncement = {
+        title: title,
+        body: body,
+        blood_type: selectedBloodType,
+        hastane: selectedHastane,
+      };
+  
+      try {
+        const response = await axios.post('http://localhost:8004/announcement/', newAnnouncement, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-    } 
+  
+        if (response.data.error) {
+          console.log(response.data.error);
+        } else {
+          console.log('Duyuru başarıyla eklendi:', response.data);
+          setShowAddModal(false);
+          // Sayfayı yeniden yükle
+          // window.location.reload(); // Bu satırı kaldırdım, çünkü state'i güncellemek daha iyi bir yaklaşım
+          setAnnouncements((prevAnnouncements) => [...prevAnnouncements, response.data]); // Yeni duyuruyu state'e ekle
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleAddModalOpen = () => {
     setSelectedAnnouncement({
       title: '',
       body: '',
-      blood_type: { type: '' },
+      blood_type:'',
+      hastane:'',
     });
     setShowUpdateModal(false); // Update modalını kapat
     setShowAddModal(true);
@@ -317,44 +365,67 @@ const Announcement = () => {
           </Modal.Body>
         </Modal>
 
-        <Modal show={showUpdateModal} onHide={handleUpdateModalClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Duyuru Güncelle</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Control
-              type="text"
-              placeholder="Başlık"
-              value={selectedAnnouncement?.title || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
-            />
-            <Form.Control
-              type="text"
-              placeholder="İçerik"
-              value={selectedAnnouncement?.body || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
-            />
-            <Form.Control
-              type="text"
-              placeholder="Kan Tipi"
-              value={selectedAnnouncement?.blood_type.type || ''}
-              onChange={(e) =>
-                setSelectedAnnouncement({
-                  ...selectedAnnouncement,
-                  blood_type: { type: e.target.value },
-                })
-              }
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleUpdateModalClose}>
-              Kapat
-            </Button>
-            <Button variant="primary" onClick={handleModalSave}>
-              Kaydet
-            </Button>
-          </Modal.Footer>
-        </Modal>
+
+
+
+      <Modal show={showUpdateModal} onHide={handleUpdateModalClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Duyuru Güncelle</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Control
+            type="text"
+            placeholder="Başlık"
+            value={selectedAnnouncement?.title || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
+          />
+          <Form.Control
+            type="text"
+            placeholder="İçerik"
+            value={selectedAnnouncement?.body || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
+          />
+          <Form.Control
+            as="select"
+            placeholder="Kan Tipi"
+            value={selectedAnnouncement?.blood_type || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, blood_type: e.target.value })}
+          >
+            <option value="" disabled>
+              Kan Tipi Seçiniz
+            </option>
+            {bloodTypes.map((bloodType) => (
+              <option key={bloodType._id} value={bloodType._id}>
+                {bloodType.type}
+              </option>
+            ))}
+          </Form.Control>
+          <Form.Control
+            as="select"
+            placeholder="Hastane"
+            value={selectedAnnouncement?.hastane || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, hastane: e.target.value })}
+          >
+            <option value="" disabled>
+              Hastane Seçiniz
+            </option>
+            {hastaneler.map((hastane) => (
+              <option key={hastane._id} value={hastane._id}>
+                {hastane.ad}
+              </option>
+            ))}
+          </Form.Control>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleUpdateModalClose}>
+            Kapat
+          </Button>
+          <Button variant="primary" onClick={handleModalSave}>
+            Kaydet
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       </div>
     </Dashboard>
   );
