@@ -3,6 +3,8 @@ import { useTable, usePagination } from 'react-table';
 import axios from 'axios';
 import Dashboard from './Dasboard'
 import { Modal, Button, Form, FormGroup, FormLabel } from 'react-bootstrap';
+const mongoose = require('mongoose');
+const { Types } = mongoose;
 
 const Announcement = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -151,8 +153,8 @@ const Announcement = () => {
       const updatedAnnouncement = {
         title: selectedAnnouncement.title,
         body: selectedAnnouncement.body,
-        blood_type: selectedAnnouncement.blood_type,
-        hastane: selectedAnnouncement.hastane,
+        blood_type: Types.ObjectId(selectedAnnouncement.blood_type), // ObjectId'ye çevir
+        hastane: Types.ObjectId(selectedAnnouncement.hastane), // ObjectId'ye çevir
       };
   
       try {
@@ -186,14 +188,14 @@ const Announcement = () => {
           console.log('Duyuru başarıyla eklendi:', response.data);
           setShowAddModal(false);
           // Sayfayı yeniden yükle
-          window.location.reload();
+          // window.location.reload(); // Bu satırı kaldırdım, çünkü state'i güncellemek daha iyi bir yaklaşım
+          setAnnouncements((prevAnnouncements) => [...prevAnnouncements, response.data]); // Yeni duyuruyu state'e ekle
         }
       } catch (error) {
         console.log(error);
       }
     }
   };
-
 
   const handleAddModalOpen = () => {
     setSelectedAnnouncement({

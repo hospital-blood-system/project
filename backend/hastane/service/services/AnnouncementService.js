@@ -80,9 +80,17 @@ class AnnouncementService{
     //İlan güncelle
     static async updateAnnouncementById(id, updatedAnnouncement) {
         try {
-          const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.hastane) });
-          const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.blood_type) });
+          // Hastane ve blood_type alanlarını ObjectId formatına dönüştür
+          const hastaneId = updatedAnnouncement.hastane;
+          const bloodTypeId = updatedAnnouncement.blood_type;
       
+          const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(hastaneId) });
+          const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(bloodTypeId) });
+      
+          if (!bloodTypeId || !hastaneId) {
+            throw new Error('Blood type veya hastane değeri uygun değil.');
+          }
+          
           const updatedAnnouncementDoc = await AnnouncementModel.findByIdAndUpdate(
             id,
             {
