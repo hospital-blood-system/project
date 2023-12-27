@@ -22,6 +22,17 @@ const Donor = () => {
       { Header: 'Cinsiyet', accessor: 'cinsiyet' },
       { Header: 'Kan Tipi', accessor: 'blood_type' },
       { Header: 'Kayıtlı Hastane', accessor: 'hastane' },
+      {
+          Header: 'Action',
+          accessor: 'action',
+          Cell: ({ row }) => (
+            <button
+              className="btn btn-success"
+            >
+              Güncelle
+            </button>
+          ),
+        },
     ],
     []
   );
