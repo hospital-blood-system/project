@@ -17,6 +17,14 @@ const Announcement = () => {
   const [selectedHastane, setSelectedHastane] = useState("");
   const [bloodTypes, setBloodTypes] = useState([]);
   const [selectedBloodType, setselectedBloodType] = useState("");
+  const [updatedDonor, setUpdatedDonor] = useState({
+    ad: '',
+    soyad: '',
+    yas: '',
+    cinsiyet: '',
+    blood_type: { type: '' },
+    hastane: { name: '' },
+  });
 
   const columns = useMemo(
     () => [
@@ -30,7 +38,11 @@ const Announcement = () => {
       },
       {
         Header: 'Kan Tipi',
-        accessor: 'blood_type.type',
+        accessor: 'blood_type',
+      },
+      {
+        Header: 'Hastane ',
+        accessor: 'hastane',
       },
       {
         Header: 'İşlemler',
@@ -133,28 +145,60 @@ const Announcement = () => {
       });
   };
 
-  const handleModalSave = () => {
+  const handleModalSave = async () => {
     if (selectedAnnouncement) {
       // Güncelleme işlemi
-      axios
-        .put(`http://localhost:8004/announcement/${selectedAnnouncement._id}`, selectedAnnouncement)
-        .then((res) => {
-          setAnnouncements((prevAnnouncements) =>
-            prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? selectedAnnouncement : item))
-          );
-          setShowUpdateModal(false);
-        })
-        .catch((err) => {
-          console.log(err);
+      const updatedAnnouncement = {
+        title: title,
+        body: body,
+        blood_type: selectedBloodType,
+        hastane: selectedHastane,
+      };
+  
+      try {
+        const response = await axios.put(`http://localhost:8004/announcement/${selectedAnnouncement._id}`, updatedAnnouncement);
+        setAnnouncements((prevAnnouncements) =>
+          prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? updatedAnnouncement : item))
+        );
+        setShowUpdateModal(false);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      // Yeni ekleme işlemi
+      const newAnnouncement = {
+        title: title,
+        body: body,
+        blood_type: selectedBloodType,
+        hastane: selectedHastane,
+      };
+  
+      try {
+        const response = await axios.post('http://localhost:8004/announcement/', newAnnouncement, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-    } 
+  
+        if (response.data.error) {
+          console.log(response.data.error);
+        } else {
+          console.log('Duyuru başarıyla eklendi:', response.data);
+          setShowAddModal(false);
+          // Sayfayı yeniden yükle
+          window.location.reload();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
-
   const handleAddModalOpen = () => {
     setSelectedAnnouncement({
       title: '',
       body: '',
-      blood_type: { type: '' },
+      blood_type:'',
+      hastane:'',
     });
     setShowUpdateModal(false); // Update modalını kapat
     setShowAddModal(true);
@@ -317,44 +361,64 @@ const Announcement = () => {
           </Modal.Body>
         </Modal>
 
-        <Modal show={showUpdateModal} onHide={handleUpdateModalClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Duyuru Güncelle</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Control
-              type="text"
-              placeholder="Başlık"
-              value={selectedAnnouncement?.title || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
-            />
-            <Form.Control
-              type="text"
-              placeholder="İçerik"
-              value={selectedAnnouncement?.body || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
-            />
-            <Form.Control
-              type="text"
-              placeholder="Kan Tipi"
-              value={selectedAnnouncement?.blood_type.type || ''}
-              onChange={(e) =>
-                setSelectedAnnouncement({
-                  ...selectedAnnouncement,
-                  blood_type: { type: e.target.value },
-                })
-              }
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleUpdateModalClose}>
-              Kapat
-            </Button>
-            <Button variant="primary" onClick={handleModalSave}>
-              Kaydet
-            </Button>
-          </Modal.Footer>
-        </Modal>
+
+
+
+      <Modal show={showUpdateModal} onHide={handleUpdateModalClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Donör Güncelle</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Control
+            type="text"
+            placeholder="Ad"
+            value={updatedDonor?.ad || ''}
+            onChange={(e) => setUpdatedDonor({ ...updatedDonor, ad: e.target.value })}
+          />
+          <Form.Control
+            type="text"
+            placeholder="Soyad"
+            value={updatedDonor?.soyad || ''}
+            onChange={(e) => setUpdatedDonor({ ...updatedDonor, soyad: e.target.value })}
+          />
+          <Form.Control
+            type="number"
+            placeholder="Yaş"
+            value={updatedDonor?.yas || ''}
+            onChange={(e) => setUpdatedDonor({ ...updatedDonor, yas: e.target.value })}
+          />
+          <Form.Control
+            as="select"
+            placeholder="Cinsiyet"
+            value={updatedDonor?.cinsiyet || ''}
+            onChange={(e) => setUpdatedDonor({ ...updatedDonor, cinsiyet: e.target.value })}
+          >
+            <option value={1}>Erkek</option>
+            <option value={0}>Kadın</option>
+          </Form.Control>
+          <Form.Control
+            type="text"
+            placeholder="Kan Tipi"
+            value={updatedDonor?.blood_type?.type || ''}
+            onChange={(e) => setUpdatedDonor({ ...updatedDonor, blood_type: { type: e.target.value } })}
+          />
+          <Form.Control
+            type="text"
+            placeholder="Hastane"
+            value={updatedDonor?.hastane?.name || ''}
+            onChange={(e) => setUpdatedDonor({ ...updatedDonor, hastane: { name: e.target.value } })}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleUpdateModalClose}>
+            Kapat
+          </Button>
+          <Button variant="primary" onClick={handleModalSave}>
+            Kaydet
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       </div>
     </Dashboard>
   );

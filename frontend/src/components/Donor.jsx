@@ -111,7 +111,7 @@ const Donor = () => {
         console.log('Donör başarıyla eklendi:', response.data);
         setShowAddModal(false);
         // Sayfayı yeniden yükle
-        window.location.reload();
+       // window.location.reload();
       }
     } catch (error) {
       console.log(error);
