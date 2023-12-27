@@ -78,14 +78,27 @@ class AnnouncementService{
     }
 
     //İlan güncelle
-    static async updateAnnouncementById(id, updateAnnouncement) {
+    static async updateAnnouncementById(id, updatedAnnouncement) {
         try {
-            const updateAnn = await Announcement.findByIdAndUpdate(id, updateAnnouncement, { new: true });
-            return updateAnn;
+          const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.hastane) });
+          const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.blood_type) });
+      
+          const updatedAnnouncementDoc = await AnnouncementModel.findByIdAndUpdate(
+            id,
+            {
+              title: updatedAnnouncement.title,
+              body: updatedAnnouncement.body,
+              blood_type: blood_type._id,
+              hastane: hastane._id,
+            },
+            { new: true }
+          );
+      
+          return updatedAnnouncementDoc;
         } catch (error) {
-            throw error;
+          throw error;
         }
-    }
+      }
 
     //İlan silme
     static async deleteAnnouncement(id) {

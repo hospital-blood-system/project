@@ -146,19 +146,19 @@ const Announcement = () => {
   };
 
   const handleModalSave = async () => {
-    if (selectedAnnouncement) {
+    if (selectedAnnouncement && selectedAnnouncement._id) {
       // Güncelleme işlemi
       const updatedAnnouncement = {
-        title: title,
-        body: body,
-        blood_type: selectedBloodType,
-        hastane: selectedHastane,
+        title: selectedAnnouncement.title,
+        body: selectedAnnouncement.body,
+        blood_type: selectedAnnouncement.blood_type,
+        hastane: selectedAnnouncement.hastane,
       };
   
       try {
         const response = await axios.put(`http://localhost:8004/announcement/${selectedAnnouncement._id}`, updatedAnnouncement);
         setAnnouncements((prevAnnouncements) =>
-          prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? updatedAnnouncement : item))
+          prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? response.data : item))
         );
         setShowUpdateModal(false);
       } catch (error) {
@@ -193,6 +193,8 @@ const Announcement = () => {
       }
     }
   };
+
+
   const handleAddModalOpen = () => {
     setSelectedAnnouncement({
       title: '',
@@ -366,48 +368,51 @@ const Announcement = () => {
 
       <Modal show={showUpdateModal} onHide={handleUpdateModalClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Donör Güncelle</Modal.Title>
+          <Modal.Title>Duyuru Güncelle</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Control
             type="text"
-            placeholder="Ad"
-            value={updatedDonor?.ad || ''}
-            onChange={(e) => setUpdatedDonor({ ...updatedDonor, ad: e.target.value })}
+            placeholder="Başlık"
+            value={selectedAnnouncement?.title || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
           />
           <Form.Control
             type="text"
-            placeholder="Soyad"
-            value={updatedDonor?.soyad || ''}
-            onChange={(e) => setUpdatedDonor({ ...updatedDonor, soyad: e.target.value })}
-          />
-          <Form.Control
-            type="number"
-            placeholder="Yaş"
-            value={updatedDonor?.yas || ''}
-            onChange={(e) => setUpdatedDonor({ ...updatedDonor, yas: e.target.value })}
+            placeholder="İçerik"
+            value={selectedAnnouncement?.body || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
           />
           <Form.Control
             as="select"
-            placeholder="Cinsiyet"
-            value={updatedDonor?.cinsiyet || ''}
-            onChange={(e) => setUpdatedDonor({ ...updatedDonor, cinsiyet: e.target.value })}
+            placeholder="Kan Tipi"
+            value={selectedAnnouncement?.blood_type || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, blood_type: e.target.value })}
           >
-            <option value={1}>Erkek</option>
-            <option value={0}>Kadın</option>
+            <option value="" disabled>
+              Kan Tipi Seçiniz
+            </option>
+            {bloodTypes.map((bloodType) => (
+              <option key={bloodType._id} value={bloodType._id}>
+                {bloodType.type}
+              </option>
+            ))}
           </Form.Control>
           <Form.Control
-            type="text"
-            placeholder="Kan Tipi"
-            value={updatedDonor?.blood_type?.type || ''}
-            onChange={(e) => setUpdatedDonor({ ...updatedDonor, blood_type: { type: e.target.value } })}
-          />
-          <Form.Control
-            type="text"
+            as="select"
             placeholder="Hastane"
-            value={updatedDonor?.hastane?.name || ''}
-            onChange={(e) => setUpdatedDonor({ ...updatedDonor, hastane: { name: e.target.value } })}
-          />
+            value={selectedAnnouncement?.hastane || ''}
+            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, hastane: e.target.value })}
+          >
+            <option value="" disabled>
+              Hastane Seçiniz
+            </option>
+            {hastaneler.map((hastane) => (
+              <option key={hastane._id} value={hastane._id}>
+                {hastane.ad}
+              </option>
+            ))}
+          </Form.Control>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleUpdateModalClose}>
