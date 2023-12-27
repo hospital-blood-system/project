@@ -270,6 +270,7 @@ const Announcement = () => {
                   placeholder="Başlık"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  required
                 />
               </Form.Group>
 
@@ -280,6 +281,7 @@ const Announcement = () => {
                   placeholder="İçerik"
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
+                  required
                 />
               </Form.Group>
 
@@ -290,6 +292,7 @@ const Announcement = () => {
                   placeholder="Kan Tipi"
                   value={selectedBloodType}
                   onChange={(e) => setselectedBloodType(e.target.value)}
+                  required
                 >
                   <option value="" disabled>
                     Kan Tipi Seçiniz
@@ -309,6 +312,7 @@ const Announcement = () => {
                   placeholder="Hastane"
                   value={selectedHastane}
                   onChange={(e) => setSelectedHastane(e.target.value)}
+                  required
                 >
                   <option value="" disabled>
                     Hastane Seçiniz
@@ -348,18 +352,21 @@ const Announcement = () => {
               placeholder="Başlık"
               value={selectedAnnouncement?.title || ''}
               onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
+              required
             />
             <Form.Control
               type="text"
               placeholder="İçerik"
               value={selectedAnnouncement?.body || ''}
               onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
+              required
             />
             <Form.Control
               as="select"
               placeholder="Kan Tipi"
               value={selectedAnnouncement?.blood_type_id || ''}
               onChange={(e) => setSelectedAnnouncement({...selectedAnnouncement, blood_type_id: e.target.value})}
+              required
             >
               <option value="" disabled>
                 Kan Tipi Seçiniz
@@ -375,6 +382,7 @@ const Announcement = () => {
               placeholder="Hastane"
               value={selectedAnnouncement?.hastane_id || ''}
               onChange={(e) => setSelectedAnnouncement({...selectedAnnouncement, hastane_id:e.target.value})}
+              required
             >
               <option value="" disabled>
                 Hastane Seçiniz

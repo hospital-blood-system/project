@@ -35,7 +35,7 @@ function Login(){
           setError(res.error);
           //window.location.href = "/Login";
         } else {
-          window.location.href = "/Dashboard";
+          window.location.href = "/announcement";
         }
       });
 
