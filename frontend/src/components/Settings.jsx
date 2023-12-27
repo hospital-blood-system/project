@@ -68,7 +68,7 @@ function Settings(){
         <br />
         <br></br>
         <button class = "btn btn-success">
-    Kaydet
+    Güncelle
         </button>
       </form>
     </Dashboard>
