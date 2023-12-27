@@ -19,9 +19,9 @@ const Announcement = () => {
   const [selectedHastane, setSelectedHastane] = useState("");
   const [bloodTypes, setBloodTypes] = useState([]);
   const [selectedBloodType, setselectedBloodType] = useState("");
-  const [updatedDonor, setUpdatedDonor] = useState({
+  /* const [updatedDonor, setUpdatedDonor] = useState({
    id:'', ad: '',soyad: '', yas: '',cinsiyet: '',blood_type: { type: '' }, hastane: { name: '' },
-  });
+  }); */
 
   const columns = useMemo(
     () => [
@@ -132,18 +132,18 @@ const Announcement = () => {
   };
 
  
-  const handleModalSave = async () => {
+  const handleModalSave = async (e) => {
+    e.preventDefault();
     try {
-      const { id, title, body, blood_type, hastane } = selectedAnnouncement;
-      console.log(id);
       const updatedAnnouncement = {
-        title,
-        body,
-        blood_type,  // object id olarak donuyor 
-        hastane,     // object id olarak donuyor 
+        id: selectedAnnouncement.id,
+        title: selectedAnnouncement.title,
+        body: selectedAnnouncement.body,
+        blood_type: selectedAnnouncement.blood_type_id,  // object id olarak donuyor 
+        hastane: selectedAnnouncement.hastane_id,     // object id olarak donuyor 
       };
-      alert(selectedAnnouncement.hastane);
-      const response = await axios.put(`http://localhost:8004/announcement/${id}`, updatedAnnouncement, {
+
+      const response = await axios.put(`http://localhost:8004/announcement/${updatedAnnouncement.id}`, updatedAnnouncement, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -153,9 +153,10 @@ const Announcement = () => {
         console.log(response.data.error);
       } else {
         console.log('Duyuru başarıyla güncellendi:', response.data);
+        setSelectedAnnouncement(null);
         setShowUpdateModal(false);
         // Sayfayı yeniden yükle
-       //window.location.reload();
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -169,6 +170,8 @@ const Announcement = () => {
       blood_type:'',
       hastane:'',
     });
+    setSelectedHastane("");
+    setselectedBloodType("");
     setShowUpdateModal(false); // Update modalını kapat
     setShowAddModal(true);
   };
@@ -200,7 +203,7 @@ const Announcement = () => {
         console.log('Duyuru başarıyla eklendi:', response.data);
         setShowAddModal(false);
         // Sayfayı yeniden yükle
-       //window.location.reload();
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -355,8 +358,8 @@ const Announcement = () => {
             <Form.Control
               as="select"
               placeholder="Kan Tipi"
-              value={selectedAnnouncement?.blood_type || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, blood_type: e.target.value })}
+              value={selectedAnnouncement?.blood_type_id || ''}
+              onChange={(e) => setSelectedAnnouncement({...selectedAnnouncement, blood_type_id: e.target.value})}
             >
               <option value="" disabled>
                 Kan Tipi Seçiniz
@@ -370,8 +373,8 @@ const Announcement = () => {
             <Form.Control
               as="select"
               placeholder="Hastane"
-              value={selectedAnnouncement?.hastane || ''}
-              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, hastane: e.target.value })}
+              value={selectedAnnouncement?.hastane_id || ''}
+              onChange={(e) => setSelectedAnnouncement({...selectedAnnouncement, hastane_id:e.target.value})}
             >
               <option value="" disabled>
                 Hastane Seçiniz

@@ -7,7 +7,7 @@ class AnnouncementService{
     //Bütün ilanları getirme
     static async getAllAnnouncemenets(){
         try{
-            const announcements = await Announcement.find().populate({ path: "blood_type", select: "type" });
+            const announcements = await Announcement.find().populate({ path: "blood_type", select: ["type","_id"] });
             const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: announcements[0].hastane });
 
             const data = announcements.map(announcement => ({
@@ -15,7 +15,9 @@ class AnnouncementService{
                 title: announcement.title,
                 body: announcement.body,
                 blood_type: announcement.blood_type.type,
+                blood_type_id: announcement.blood_type._id,
                 hastane: hastane.ad,
+                hastane_id: hastane._id,
             }));
 
             return data;
@@ -81,15 +83,6 @@ class AnnouncementService{
     //İlan güncelle
     static async updateAnnouncementById(id, updatedAnnouncement) {
         try {
-          console.log("Updated Announcement:", updatedAnnouncement); // Kontrol için log ekle
-      
-          //const { hastaneId, bloodTypeId, ...rest } = updatedAnnouncement;
-      
-          /* if (!bloodTypeId || !hastaneId) {
-            throw new Error('Blood type veya hastane değeri uygun değil.');
-          }
-          console.log(hastaneId); */
-          console.log(updatedAnnouncement);
 
           const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.hastane) });
           const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.blood_type) });
