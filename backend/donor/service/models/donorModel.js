@@ -11,6 +11,10 @@ const DonorSchema = new Schema({
         type: String,
         required: true
     },
+    iletisim: {
+        type: String,
+        required: true
+    },
     yas: {
         type: Number,
         required: true
