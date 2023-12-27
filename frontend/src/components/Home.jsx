@@ -1,9 +1,26 @@
-import React  from "react";
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 import ScrollToBottomButton from "./ScrollToBottomButton";
 import ScrollToCenterButton from "./ScrollToCenterButton.jsx";
 
 function Home(){
+
+    const [announcements, setAnnouncements] = useState([]);
+
+    const handleAnnouncements = async () => {
+      try {
+        const response = await axios.get('http://localhost:8004/announcement');
+        console.log(response);
+        setAnnouncements(response.data);
+      } catch (error) {
+        console.error("Announcements request error:", error);
+      }
+    };
+
+    useEffect(() => {
+      handleAnnouncements();
+    }, []);
     
     return(
         <div>
@@ -74,111 +91,20 @@ function Home(){
         </div>
       </div>
       <div className="row justify-content-center">
-      <div className="card w-75 mb-3">
-  <div className="card-body">
-    <h5 className="card-title">🚨 ACİL KAN BAĞIŞI İHTİYACI 🚨</h5>
-    <p className="card-text">Sevgili Topluluk Üyeleri,
 
-Bir acil durumla karşı karşıyayız ve sizin yardımınıza ihtiyacımız var. Hasta bir bireyimiz hayati bir mücadele veriyor ve şu anda 🩸B Rh-  kana acil ihtiyaç duyuyoruz.
-
-Bağış Yeri ve Tarih:
-📅 Tarih: [21.12.2023]
-📍 Bağış Merkezi: [Fırat Üniversitesi Hastanesi]
-
-Lütfen sağlıklıysanız, bu çağrıya yanıt verin ve kan bağışında bulunun. Bir damla kan, bir hayat kurtarabilir. Ayrıca, bu duyuruyu çevrenizle paylaşarak daha fazla kişinin haberdar olmasına yardımcı olabilirsiniz.
-
-Unutmayın, birlikte daha güçlüyüz. Yardımlarınız için şimdiden teşekkür ederiz! 
-
-İletişim İçin:
-📞 [05416309501]
-✉️ [hasanözdinç@gmail.com] . . .</p>
-    <a href="#" class="btn btn-primary">Detay </a>
+      {announcements.map((ilan, index) => (
+  <div key={index} className="card w-75 mb-3">
+    <div className="card-body">
+      <h5 className="card-title">🚨 {ilan.title} 🚨</h5>
+      <p className="card-text">
+        Sevgili Topluluk Üyeleri,
+        Bir acil durumla karşı karşıyayız ve sizin yardımınıza ihtiyacımız var.
+        {ilan.body}, {ilan.blood_type}
+      </p>
+      <span>{ilan.hastane}</span>
+    </div>
   </div>
-</div>
-
-<div className="card w-75 mb-3">
-  <div className="card-body">
-    <h5 className="card-title">🚨 ACİL KAN BAĞIŞI İHTİYACI 🚨</h5>
-    <p className="card-text">Sevgili Topluluk Üyeleri,
-
-Bir acil durumla karşı karşıyayız ve sizin yardımınıza ihtiyacımız var. Hasta bir bireyimiz hayati bir mücadele veriyor ve şu anda 🩸0 Rh+  kana acil ihtiyaç duyuyoruz.
-
-Bağış Yeri ve Tarih:
-📅 Tarih: [17.12.2023]
-📍 Bağış Merkezi: [Fetih Sekin Şehir Hastanesi]
-
-Lütfen sağlıklıysanız, bu çağrıya yanıt verin ve kan bağışında bulunun. Bir damla kan, bir hayat kurtarabilir. Ayrıca, bu duyuruyu çevrenizle paylaşarak daha fazla kişinin haberdar olmasına yardımcı olabilirsiniz.
-
-Unutmayın, birlikte daha güçlüyüz. Yardımlarınız için şimdiden teşekkür ederiz!
-
-İletişim İçin:
-📞 [05436845485]
-✉️ [meryemnurozdemir@gmail.com] . . .</p>
-    <a href="#" class="btn btn-primary">Detay</a>
- 
-
-
-          </div>
-        </div>
-        <div className="card w-75 mb-3">
-  <div className="card-body">
-    <h5 className="card-title">🌟 BAĞIŞ KAMPANYASI: BİRLİKTE HAYATLARI DEĞİŞTİRELİM! 🌟</h5>
-    <p className="card-text">
-Sevgili Dostlar,
-
-Sizleri yeni bir bağış kampanyamıza katılmaya davet ediyoruz! Bu kampanya ile birlikte, topluluğumuzun sağlığına ve refahına destek olabilir, birlikte güçlü bir etki yaratabiliriz.
-
-🏆 Hedefimiz: Bu kampanyada amacımız 1000 bağışçıdan destek almak
-
-📅 Kampanya Süresi: [1.12.2023] - [1.01.2024]
-
-Kampanya Avantajları:
-✨ İlk 100 Bağışçıya Özel Sertifika
-✨ Her Bağış, Topluluğumuz İçin Bir Yatırım
-
-Bağışı Paylaşın:
-Bağışınızın sosyal medyada #HayatıDeğiştirBağışıyla etiketiyle paylaşarak kampanyamıza daha fazla katkı sağlayabilirsiniz.
-
-🙏 Topluluğumuzun gücü, sizin bağışlarınızla büyüyor. Katkılarınız için şimdiden teşekkür ederiz!
-
-
-İletişim İçin:
-📞 [02124502052] . . .
-</p>
-    <a href="#" class="btn btn-primary">Detay</a>
-  </div>
-</div>
-
-<div className="card w-75 mb-3">
-  <div className="card-body">
-    <h5 className="card-title">🤝 GÖNÜLLÜ BAĞIŞ ÇAĞRISI: BİR GÜLÜMSEMEYLE DEĞİŞİM YARATIN! 🤝</h5>
-    <p className="card-text">
-Sevgili Dostlar,
-
-Topluluğumuzu daha güzel bir yer haline getirmek için bir araya gelme vakti geldi! Gelin, birlikte gönüllü olarak değişim yaratalım ve birbirimize destek olalım.
-
-👐 Gönüllü Hedefimiz: Bu kampanya kapsamında 500 gönüllüyü bir araya getirerek çeşitli projelerde birlikte çalışmak ve pozitif bir etki yaratmak.
-
-📅 Gönüllülük Tarihleri: [1.01.2024] - [30.06.2024]
-
-Neden Gönüllü Olmalısınız?
-[Burada, gönüllülük faaliyetinin topluluğa, çevreye veya belirli bir amaca nasıl katkı sağlayacağını açıklayın.]
-
-Gönüllülük Avantajları:
-✨ Yeni Arkadaşlıklar Kurma Fırsatı
-✨ Topluluğumuza Kalıcı Bir Etki Bırakma Şansı
-
-Gönüllülüğü Paylaşın:
-Gönüllülük deneyimlerinizi sosyal medyada #GönüllüDeğişim etiketiyle paylaşarak daha fazla insanı gönüllü olmaya teşvik edebilirsiniz.
-
-🙏 Topluluğumuza değerli katkılarınız için şimdiden teşekkür ederiz!
-İletişim İçin:
-📞 [02124502052] . . .
-</p>
-    <a href="#" class="btn btn-primary">Detay</a>
-  </div>
-</div>
-          
+))}
        
       </div>
     </div>
@@ -188,7 +114,7 @@ Gönüllülük deneyimlerinizi sosyal medyada #GönüllüDeğişim etiketiyle pa
   <footer className="footer">
     <div className="">
       <div className="container">
-        <div className="row">
+        <div className="row pt-4">
           <div className="col-xl-4 col-md-6 col-lg-4 ">
             <div className="footer_widget">
               <div className="footer_logo">
@@ -256,7 +182,7 @@ Gönüllülük deneyimlerinizi sosyal medyada #GönüllüDeğişim etiketiyle pa
     <textarea className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
   </div>
 </form>
-<button type="button" class="btn btn-danger">Gönder</button>
+<button type="button" className="btn btn-danger">Gönder</button>
           </div>
         </div>
       </div>
