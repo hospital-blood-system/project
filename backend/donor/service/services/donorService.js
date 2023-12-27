@@ -11,10 +11,12 @@ class DonorService {
                 const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: donor.blood_type });
                 //const hastaneAd = hastane ? hastane.ad : null;
                 return {
+                    _id:donor._id,
                     ad: donor.ad,
                     soyad: donor.soyad,
                     yas: donor.yas,
                     cinsiyet: donor.cinsiyet,
+                    iletisim: donor.iletisim,
                     blood_type: blood_type.type,
                     hastane:hastane.ad
                 };
@@ -71,20 +73,15 @@ class DonorService {
     }
 
     // ID'ye göre bağışçı güncelle
-    static async updateDonorById(id, updatedDonor) {
+    static async updateDonorById(id, updatDonor) {
         try {
-            const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(updatedDonor.hastane) });
-            const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(updatedDonor.blood_type) });
-    
             const updatedDonor = await DonorModel.findByIdAndUpdate(
-                donorId,
+                id,
                 {
-                    ad: updatedDonor.ad,
-                    soyad: updatedDonor.soyad,
-                    yas: updatedDonor.yas,
-                    cinsiyet: updatedDonor.cinsiyet == 1 ? true : false,
-                    blood_type: blood_type._id,
-                    hastane: hastane._id,
+                    ad: updatDonor.ad,
+                    soyad: updatDonor.soyad,
+                    yas: updatDonor.yas,
+                    iletisim: updatDonor.iletisim,
                 },
                 { new: true }
             );

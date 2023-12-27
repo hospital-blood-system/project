@@ -61,15 +61,15 @@ function Login(){
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">Personal No</label>
-                  <input type="text" className="form-control" id="personal_no" name="personal_no" aria-describedby="textHelp" value={personalNo} onChange={handlePersonalNo}/>
+                  <input type="text" className="form-control" id="personal_no" name="personal_no" aria-describedby="textHelp" value={personalNo} onChange={handlePersonalNo} required/>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="sifre" className="form-label">Password</label>
-                  <input type="password" className="form-control" id="sifre" name="sifre" aria-describedby="textHelp" value={password} onChange={handlePassword}/>
+                  <input type="password" className="form-control" id="sifre" name="sifre" aria-describedby="textHelp" value={password} onChange={handlePassword} required/>
                 </div>
                 <div className="d-flex align-items-center justify-content-between mb-4">
                   <div className="form-check">
-                    <input className="form-check-input primary" type="checkbox" defaultValue id="flexCheckChecked" defaultChecked />
+                    <input className="form-check-input primary" type="checkbox" defaultValue id="flexCheckChecked" defaultChecked/>
                     <label className="form-check-label text-dark" htmlFor="flexCheckChecked">
                       Remeber this Device
                     </label>
