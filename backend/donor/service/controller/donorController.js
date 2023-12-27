@@ -1,4 +1,6 @@
 const donorService = require('../services/donorService');
+const DonorModel = require('../models/donorModel');
+const mongoose = require('mongoose')
 
 const getAllDonors = async (req, res) => {
     try {
@@ -51,10 +53,27 @@ const deleteDonor = async (req, res) => {
     }
 };
 
+// ID'ye göre bağışçı getir
+const getDonorByBloodId = async (req, res) => {
+    try {
+        const blood_type = req.params.blood_type;
+        console.log("Searching for donors with blood type:", blood_type);
+
+        const donors = await DonorModel.find({ blood_type: new mongoose.Types.ObjectId(blood_type) });
+        console.log("Found donors:", donors);
+
+        return res.status(200).json(donors);
+    } catch (error) {
+        console.error("Error in getDonorByBloodId:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
 module.exports = {
     getAllDonors,
     getDonorById,
     createDonor,
     updateDonor,
     deleteDonor,
+    getDonorByBloodId,
 };
