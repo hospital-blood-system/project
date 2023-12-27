@@ -62,6 +62,7 @@ class DonorService {
                 soyad:newDonor.soyad,
                 yas:newDonor.yas,
                 cinsiyet:newDonor.cinsiyet == 1 ? true:false,
+                iletisim:newDonor.iletisim,
                 blood_type:blood_type._id,
                 hastane:hastane._id,
             });
