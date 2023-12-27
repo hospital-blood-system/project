@@ -19,33 +19,17 @@ const Announcement = () => {
   const [selectedHastane, setSelectedHastane] = useState("");
   const [bloodTypes, setBloodTypes] = useState([]);
   const [selectedBloodType, setselectedBloodType] = useState("");
-  const [updatedDonor, setUpdatedDonor] = useState({
-    ad: '',
-    soyad: '',
-    yas: '',
-    cinsiyet: '',
-    blood_type: { type: '' },
-    hastane: { name: '' },
-  });
+  /* const [updatedDonor, setUpdatedDonor] = useState({
+   id:'', ad: '',soyad: '', yas: '',cinsiyet: '',blood_type: { type: '' }, hastane: { name: '' },
+  }); */
 
   const columns = useMemo(
     () => [
-      {
-        Header: 'Başlık',
-        accessor: 'title',
-      },
-      {
-        Header: 'İçerik',
-        accessor: 'body',
-      },
-      {
-        Header: 'Kan Tipi',
-        accessor: 'blood_type',
-      },
-      {
-        Header: 'Hastane ',
-        accessor: 'hastane',
-      },
+      {Header: 'id',accessor: 'id', },
+      {Header: 'Başlık',accessor: 'title', },
+      {Header: 'İçerik',accessor: 'body', },
+      {Header: 'Kan Tipi',accessor: 'blood_type',},
+      {Header: 'Hastane ',accessor: 'hastane',},
       {
         Header: 'İşlemler',
         Cell: ({ row }) => (
@@ -147,53 +131,35 @@ const Announcement = () => {
       });
   };
 
-  const handleModalSave = async () => {
-    if (selectedAnnouncement && selectedAnnouncement._id) {
-      // Güncelleme işlemi
+ 
+  const handleModalSave = async (e) => {
+    e.preventDefault();
+    try {
       const updatedAnnouncement = {
+        id: selectedAnnouncement.id,
         title: selectedAnnouncement.title,
         body: selectedAnnouncement.body,
-        blood_type: Types.ObjectId(selectedAnnouncement.blood_type), // ObjectId'ye çevir
-        hastane: Types.ObjectId(selectedAnnouncement.hastane), // ObjectId'ye çevir
+        blood_type: selectedAnnouncement.blood_type_id,  // object id olarak donuyor 
+        hastane: selectedAnnouncement.hastane_id,     // object id olarak donuyor 
       };
-  
-      try {
-        const response = await axios.put(`http://localhost:8004/announcement/${selectedAnnouncement._id}`, updatedAnnouncement);
-        setAnnouncements((prevAnnouncements) =>
-          prevAnnouncements.map((item) => (item._id === selectedAnnouncement._id ? response.data : item))
-        );
+
+      const response = await axios.put(`http://localhost:8004/announcement/${updatedAnnouncement.id}`, updatedAnnouncement, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else {
+        console.log('Duyuru başarıyla güncellendi:', response.data);
+        setSelectedAnnouncement(null);
         setShowUpdateModal(false);
-      } catch (error) {
-        console.log(error);
+        // Sayfayı yeniden yükle
+        window.location.reload();
       }
-    } else {
-      // Yeni ekleme işlemi
-      const newAnnouncement = {
-        title: title,
-        body: body,
-        blood_type: selectedBloodType,
-        hastane: selectedHastane,
-      };
-  
-      try {
-        const response = await axios.post('http://localhost:8004/announcement/', newAnnouncement, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-  
-        if (response.data.error) {
-          console.log(response.data.error);
-        } else {
-          console.log('Duyuru başarıyla eklendi:', response.data);
-          setShowAddModal(false);
-          // Sayfayı yeniden yükle
-          // window.location.reload(); // Bu satırı kaldırdım, çünkü state'i güncellemek daha iyi bir yaklaşım
-          setAnnouncements((prevAnnouncements) => [...prevAnnouncements, response.data]); // Yeni duyuruyu state'e ekle
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -204,6 +170,8 @@ const Announcement = () => {
       blood_type:'',
       hastane:'',
     });
+    setSelectedHastane("");
+    setselectedBloodType("");
     setShowUpdateModal(false); // Update modalını kapat
     setShowAddModal(true);
   };
@@ -235,7 +203,7 @@ const Announcement = () => {
         console.log('Duyuru başarıyla eklendi:', response.data);
         setShowAddModal(false);
         // Sayfayı yeniden yükle
-       window.location.reload();
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -302,6 +270,7 @@ const Announcement = () => {
                   placeholder="Başlık"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  required
                 />
               </Form.Group>
 
@@ -312,6 +281,7 @@ const Announcement = () => {
                   placeholder="İçerik"
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
+                  required
                 />
               </Form.Group>
 
@@ -322,6 +292,7 @@ const Announcement = () => {
                   placeholder="Kan Tipi"
                   value={selectedBloodType}
                   onChange={(e) => setselectedBloodType(e.target.value)}
+                  required
                 >
                   <option value="" disabled>
                     Kan Tipi Seçiniz
@@ -341,6 +312,7 @@ const Announcement = () => {
                   placeholder="Hastane"
                   value={selectedHastane}
                   onChange={(e) => setSelectedHastane(e.target.value)}
+                  required
                 >
                   <option value="" disabled>
                     Hastane Seçiniz
@@ -373,57 +345,64 @@ const Announcement = () => {
           <Modal.Title>Duyuru Güncelle</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Control
-            type="text"
-            placeholder="Başlık"
-            value={selectedAnnouncement?.title || ''}
-            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
-          />
-          <Form.Control
-            type="text"
-            placeholder="İçerik"
-            value={selectedAnnouncement?.body || ''}
-            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
-          />
-          <Form.Control
-            as="select"
-            placeholder="Kan Tipi"
-            value={selectedAnnouncement?.blood_type || ''}
-            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, blood_type: e.target.value })}
-          >
-            <option value="" disabled>
-              Kan Tipi Seçiniz
-            </option>
-            {bloodTypes.map((bloodType) => (
-              <option key={bloodType._id} value={bloodType._id}>
-                {bloodType.type}
+        <Form onSubmit={handleModalSave}>
+           {selectedAnnouncement && (<Form.Control type="hidden" value={selectedAnnouncement.id}/>)}
+            <Form.Control
+              type="text"
+              placeholder="Başlık"
+              value={selectedAnnouncement?.title || ''}
+              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, title: e.target.value })}
+              required
+            />
+            <Form.Control
+              type="text"
+              placeholder="İçerik"
+              value={selectedAnnouncement?.body || ''}
+              onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, body: e.target.value })}
+              required
+            />
+            <Form.Control
+              as="select"
+              placeholder="Kan Tipi"
+              value={selectedAnnouncement?.blood_type_id || ''}
+              onChange={(e) => setSelectedAnnouncement({...selectedAnnouncement, blood_type_id: e.target.value})}
+              required
+            >
+              <option value="" disabled>
+                Kan Tipi Seçiniz
               </option>
-            ))}
-          </Form.Control>
-          <Form.Control
-            as="select"
-            placeholder="Hastane"
-            value={selectedAnnouncement?.hastane || ''}
-            onChange={(e) => setSelectedAnnouncement({ ...selectedAnnouncement, hastane: e.target.value })}
-          >
-            <option value="" disabled>
-              Hastane Seçiniz
-            </option>
-            {hastaneler.map((hastane) => (
-              <option key={hastane._id} value={hastane._id}>
-                {hastane.ad}
+              {bloodTypes.map((bloodType) => (
+                <option value={bloodType._id}>
+                  {bloodType.type}
+                </option>
+              ))}
+            </Form.Control>
+            <Form.Control
+              as="select"
+              placeholder="Hastane"
+              value={selectedAnnouncement?.hastane_id || ''}
+              onChange={(e) => setSelectedAnnouncement({...selectedAnnouncement, hastane_id:e.target.value})}
+              required
+            >
+              <option value="" disabled>
+                Hastane Seçiniz
               </option>
-            ))}
-          </Form.Control>
+              {hastaneler.map((hastane) => (
+                <option value={hastane._id}>
+                  {hastane.ad}
+                </option>
+              ))}
+            </Form.Control>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleUpdateModalClose}>
+              Kapat
+            </Button>
+            <Button type='submit' variant="primary">
+              Kaydet
+            </Button>
+          </Modal.Footer>
+        </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleUpdateModalClose}>
-            Kapat
-          </Button>
-          <Button variant="primary" onClick={handleModalSave}>
-            Kaydet
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       </div>

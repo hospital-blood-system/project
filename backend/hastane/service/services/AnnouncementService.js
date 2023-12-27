@@ -7,14 +7,17 @@ class AnnouncementService{
     //Bütün ilanları getirme
     static async getAllAnnouncemenets(){
         try{
-            const announcements = await Announcement.find().populate({ path: "blood_type", select: "type" });
+            const announcements = await Announcement.find().populate({ path: "blood_type", select: ["type","_id"] });
             const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: announcements[0].hastane });
 
             const data = announcements.map(announcement => ({
+                id: announcement._id,
                 title: announcement.title,
                 body: announcement.body,
                 blood_type: announcement.blood_type.type,
+                blood_type_id: announcement.blood_type._id,
                 hastane: hastane.ad,
+                hastane_id: hastane._id,
             }));
 
             return data;
@@ -59,7 +62,7 @@ class AnnouncementService{
         try {
            
             const newAnn = await mongoose.model('Announcement').create(newAnnouncement);
-            const hastaneId = newAnn.hastane;
+            const hastaneId = newAnn.hastane && newAnn.hastane._id;
 
             const hastaneInfo = await mongoose.connection.collection('hastanes').findOne({ _id: hastaneId });
 
@@ -80,22 +83,15 @@ class AnnouncementService{
     //İlan güncelle
     static async updateAnnouncementById(id, updatedAnnouncement) {
         try {
-          // Hastane ve blood_type alanlarını ObjectId formatına dönüştür
-          const hastaneId = updatedAnnouncement.hastane;
-          const bloodTypeId = updatedAnnouncement.blood_type;
-      
-          const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(hastaneId) });
-          const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(bloodTypeId) });
-      
-          if (!bloodTypeId || !hastaneId) {
-            throw new Error('Blood type veya hastane değeri uygun değil.');
-          }
+
+          const hastane = await mongoose.connection.collection('hastanes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.hastane) });
+          const blood_type = await mongoose.connection.collection('bloodtypes').findOne({ _id: new mongoose.Types.ObjectId(updatedAnnouncement.blood_type) });
           
-          const updatedAnnouncementDoc = await AnnouncementModel.findByIdAndUpdate(
+          const updatedAnnouncementDoc = await Announcement.findByIdAndUpdate(
             id,
             {
-              title: updatedAnnouncement.title,
-              body: updatedAnnouncement.body,
+              title:updatedAnnouncement.title,
+              body:updatedAnnouncement.body,
               blood_type: blood_type._id,
               hastane: hastane._id,
             },
@@ -106,8 +102,7 @@ class AnnouncementService{
         } catch (error) {
           throw error;
         }
-      }
-
+      };
     //İlan silme
     static async deleteAnnouncement(id) {
         try {

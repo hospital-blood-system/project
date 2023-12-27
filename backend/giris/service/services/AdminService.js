@@ -48,7 +48,7 @@ class AdminService{
     //GetAll
     static async GetAdmins(){
         try{
-            const admins = await Admin.find();
+            const admins = await Admin.find().populate({path:'hastane', select:["ad"]});
             return admins;
         }catch(error){
             return json({error:error.message})

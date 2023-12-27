@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 const DonorSchema = new Schema({
     ad: {
         type: String,
-        required: true
+        required: false
     },
     soyad: {
         type: String,
-        required: true
+        required: false
     },
     iletisim: {
         type: String,
@@ -17,19 +17,19 @@ const DonorSchema = new Schema({
     },
     yas: {
         type: Number,
-        required: true
+        required: false 
     },
     cinsiyet: {
         type: Boolean,
-        required: true
+        required: false
     },
     blood_type: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: false
     },
     hastane: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: false
     }
 });
 
