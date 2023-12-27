@@ -46,30 +46,28 @@ const addAnnouncement = async(req,res)=>{
     }
 };
 
-const updateAnnouncement = async(req,res)=>{
-
+const updateAnnouncement = async (req, res) => {
     const announcementData = req.body;
     const announcementId = req.params._id;
-
-    try{
-
-        const announcement = await AnnouncementService.getAnnouncemenetById(announcementId);
-
-        if(!announcement){
-            res.status(400).json({error:"İlan bulunamadi!"}); 
-        }
-
-        const updateAnnouncement = await AnnouncementService.updateAnnouncementById(announcementId,announcementData);
-        
-        if(!updateAnnouncement){
-            res.status(500).json({error:"Initial server error"});
-        }
-
-        res.status(200).json(updateAnnouncement);
-    }catch(error){
-        res.status(500).json({error:error.message});
+  
+    try {
+      const announcement = await AnnouncementService.updateAnnouncementById(announcementId, announcementData);
+  
+      if (!announcement) {
+        res.status(400).json({ error: "İlan bulunamadı!" });
+      }
+  
+      /* const updatedAnnouncement = await AnnouncementService.updateAnnouncementById(announcementId, announcementData);
+  
+      if (!updatedAnnouncement) {
+        res.status(500).json({ error: "Initial server error" });
+      } */
+  
+      res.status(200).json(announcement);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-};
+  };
 
 const deleteAnnouncement = async(req,res)=>{
     const announcementId = req.params._id;
