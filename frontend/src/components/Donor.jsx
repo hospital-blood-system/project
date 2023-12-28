@@ -27,12 +27,20 @@ const Donor = () => {
       {
           Header: 'Action',
           Cell: ({ row }) => (
-            <button
-              className="btn btn-success"
-              onClick={()=>handleEditModalOpen(row.original._id)}
-            >
-              Güncelle
-            </button>
+              <div>
+                <button
+                className="btn btn-success mx-2"
+                onClick={()=>handleEditModalOpen(row.original._id)}
+                >
+                  Güncelle
+                </button>
+                <button
+                className="btn btn-danger mx-2"
+                onClick={()=>handleDelete(row.original._id)}
+                >
+                  Sil
+                </button>
+              </div>
           ),
         },
     ],
@@ -180,6 +188,21 @@ const Donor = () => {
       }
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  const handleDelete = async(_id)=>{
+    try{
+      const response = await axios.delete(`http://localhost:8003/donor/delete/${_id}`)
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else {
+        console.log('Donör başarıyla silindi');
+        // Sayfayı yeniden yükle
+        window.location.reload();
+      }
+    }catch(error){
+      console.log(error.message)
     }
   }
   

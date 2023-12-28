@@ -8,6 +8,6 @@ router.get('/blood_type/:blood_type', donorController.getDonorByBloodId);
 router.post('/', donorController.createDonor);
 router.post('/mail', donorController.sendMail);
 router.put('/:id', donorController.updateDonor); 
-router.delete('/:id', donorController.deleteDonor);
+router.delete('/delete/:_id', donorController.deleteDonor);
 
 module.exports = router;

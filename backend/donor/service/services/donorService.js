@@ -98,7 +98,7 @@ class DonorService {
     // ID'ye göre bağışçı sil
    static async deleteDonorById(id) {
         try {
-            const deletedDonor = await DonorModel.findByIdAndDelete(id);
+            const deletedDonor = await DonorModel.findByIdAndDelete(new mongoose.Types.ObjectId(id));
             return deletedDonor;
         } catch (error) {
             throw error;

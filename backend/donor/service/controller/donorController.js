@@ -44,7 +44,7 @@ const updateDonor = async (req, res) => {
 };
 
 const deleteDonor = async (req, res) => {
-    const donorId = req.params.id;
+    const donorId = req.params._id;
     try {
         const deletedDonor = await donorService.deleteDonorById(donorId);
         res.json(deletedDonor);
