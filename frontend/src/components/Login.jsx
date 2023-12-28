@@ -54,7 +54,7 @@ function Login(){
         <div className="col-md-8 col-lg-6 col-xxl-3">
           <div className="card mb-0">
             <div className="card-body">
-              <a href="#" className="text-nowrap logo-img text-center d-block py-3 w-100">
+              <a href="/" className="text-nowrap logo-img text-center d-block py-3 w-100">
                 <Logo></Logo>
               </a>
               <p className="text-center">Giriş</p>
