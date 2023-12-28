@@ -45,7 +45,7 @@ const Sidebar = () => {
                 <span>
                   <i className="ti ti-article" />
                 </span>
-                <span className="hide-menu">İstatislikler</span>
+                <span className="hide-menu">E-Mailler</span>
               </Link>
               </a>
             </li>

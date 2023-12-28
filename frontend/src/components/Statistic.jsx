@@ -1,77 +1,95 @@
-import React from 'react';
-import Dashboard from './Dasboard'
-import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, RadialBarChart, RadialBar, Tooltip, Legend,
-} from 'recharts';
+import React, { useState, useEffect } from 'react';
+import Dashboard from './Dasboard';
+import axios from 'axios';
 
 function Statistic() {
-  // Sahte verileri oluştur
-  const dataBar = [
-    { name: 'A', value: 12 },
-    { name: 'B', value: 19 },
-    { name: 'C', value: 3 },
-    { name: 'D', value: 5 },
-  ];
+  const [donorList, setDonorList] = useState([]);
 
-  const dataLine = [
-    { name: 'A', value: 10 },
-    { name: 'B', value: 5 },
-    { name: 'C', value: 15 },
-    { name: 'D', value: 8 },
-  ];
+  const fetchDonors = async () => {
+    try {
+      const response = await axios.get('http://localhost:8003/donor/');
+      const indexedData = response.data;
+      setDonorList(indexedData);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
-  const dataPie = [
-    { name: 'A', value: 30 },
-    { name: 'B', value: 12 },
-    { name: 'C', value: 20 },
-    { name: 'D', value: 15 },
-  ];
+  useEffect(() => {
+    fetchDonors();
+  }, []); // Use an empty dependency array to run the effect only once on component mount
 
-  const dataDoughnut = [
-    { name: 'A', value: 25 },
-    { name: 'B', value: 18 },
-    { name: 'C', value: 10 },
-    { name: 'D', value: 30 },
-  ];
+  const handleSendEmail = (email) => {
+    // Implement your logic to send an email using the provided email address
+    console.log(`Sending email to: ${email}`);
+  };
 
   return (
     <Dashboard>
-    <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: '36px', color: '#333' }}>Bu alan  chartları barındırır</h1>
-    </div>
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+      </div>
 
-
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {/* Bar Chart */}
-        <BarChart width={400} height={300} data={dataBar}>
-          <Bar dataKey="value" fill="#8884d8" />
-          <Tooltip />
-          <Legend />
-        </BarChart>
-
-        {/* Line Chart */}
-        <LineChart width={400} height={300} data={dataLine}>
-          <Line type="monotone" dataKey="value" stroke="#8884d8" />
-          <Tooltip />
-          <Legend />
-        </LineChart>
-
-        {/* Pie Chart */}
-        <PieChart width={400} height={300}>
-          <Pie data={dataPie} dataKey="value" nameKey="name" fill="#8884d8" label />
-          <Tooltip />
-          <Legend />
-        </PieChart>
-
-        {/* Doughnut Chart */}
-        <RadialBarChart width={400} height={300} innerRadius="40%" outerRadius="60%" data={dataDoughnut}>
-          <RadialBar dataKey="value" fill="#8884d8" />
-          <Tooltip />
-          <Legend />
-        </RadialBarChart>
+      <div>
+      <h3 className="display-5 fw-bold text-primary text-center mb-4">Donor Listesi</h3>
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={tableHeaderStyle}>Ad</th>
+              <th style={tableHeaderStyle}>Kan Grubu</th>
+              <th style={tableHeaderStyle}>Email</th>
+              <th style={tableHeaderStyle}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.isArray(donorList) &&
+              donorList.map((donor) => (
+                <tr key={donor._id} style={tableRowStyle}>
+                  <td style={tableCellStyle}>{donor.ad}</td>
+                  <td style={tableCellStyle}>{donor.blood_type}</td>
+                  <td style={tableCellStyle}>{donor.iletisim}</td>
+                  <td style={tableCellStyle}>
+                    <button style={emailButtonStyle} onClick={() => handleSendEmail(donor.iletisim)}>
+                      Email Gönder
+                    </button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
     </Dashboard>
   );
 }
+
+const tableStyle = {
+  width: '100%',
+  borderCollapse: 'collapse',
+  marginTop: '20px',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+};
+
+const tableHeaderStyle = {
+  background: '#f2f2f2',
+  border: '1px solid #ddd',
+  padding: '12px',
+};
+
+const tableRowStyle = {
+  border: '1px solid #ddd',
+};
+
+const tableCellStyle = {
+  padding: '12px',
+};
+
+const emailButtonStyle = {
+  background: '#4CAF50',
+  color: 'white',
+  border: 'none',
+  padding: '8px 16px',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+};
 
 export default Statistic;
