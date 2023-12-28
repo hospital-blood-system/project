@@ -2,32 +2,43 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 const express = require('express');
 
-const proxy = httpProxy.createProxyServer({});
-const proxyServer = http.createServer((req, res) => {
-    console.log('Proxying request to API server');
-    proxy.web(req, res, {target :'http://localhost:3000'});
-})
+const createProxyServer = (target) => {
+    const proxy = httpProxy.createProxyServer({});
+    return (req, res) => {
+        console.log(`Proxying request to ${target}`);
+        proxy.web(req, res, { target });
+    };
+};
 
-const app=express();
-const gatewayServer= http.createServer(app);
+const app = express();
+const gatewayServer = http.createServer(app);
 
-app.get('/',(req,res)=>{
+const publicResourceHandler = (req, res) => {
     console.log('Handling public resource locally');
-    res.sendFile('This is a public resource ');
-})
+    res.send('This is a public resource');
+};
 
-app.get('/deneme',(req,res)=>{
-    console.log('Handling public resource locally');
-    proxy.web(req, res, {target :'http://localhost:3001'})
-})
+const donorProxyHandler = createProxyServer('http://localhost:8003');
+const girisProxyHandler = createProxyServer('http://localhost:8002');
+const hastaneProxyHandler = createProxyServer('http://localhost:8004');
 
-proxyServer.listen(4000,()=>{
-    console.log('Proxy server is running on port 4000');
+
+app.get('/', publicResourceHandler);
+
+// API Gateway
+app.all('/donor/*', donorProxyHandler);
+app.all('/giris/*', girisProxyHandler);
+app.all('/hastane/*', hastaneProxyHandler);
+
+// Error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
 });
 
-gatewayServer.listen(3002,()=>{
+gatewayServer.listen(3002, () => {
     console.log('API Gateway listening on port 3002');
-})
+});
 
 /*  
 Proxy Server, gelen istekleri olduğu gibi hedef sunucuya (API Server) iletebilir.
