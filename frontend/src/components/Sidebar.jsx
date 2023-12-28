@@ -10,7 +10,7 @@ const Sidebar = () => {
       {/* Sidebar scroll*/}
       <div>
         <div className="brand-logo d-flex align-items-center justify-content-center">
-          <a href="./index.html" className="text-nowrap logo-img">
+          <a href="/" className="text-nowrap logo-img">
             <Logo></Logo>
           </a>
           <div className="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
