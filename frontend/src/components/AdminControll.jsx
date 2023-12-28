@@ -37,6 +37,7 @@ function AdminControll() {
           }}>
             <p>Name: {admin.ad}</p>
             <p>Surname: {admin.soyad}</p>
+            <p>personel numarası: {admin.personal_no}</p>
             <p>Hospital: {admin.hastane ? admin.hastane.ad : 'N/A'}</p>
           </div>
         ))}
