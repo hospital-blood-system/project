@@ -1,5 +1,7 @@
+const Announcement = require('../../../hastane/service/models/AnnouncementModel');
 const DonorModel = require('../models/donorModel');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer')
 
 class DonorService {
     // Tüm bağışçıları getir
@@ -102,6 +104,58 @@ class DonorService {
             throw error;
         }
     }
+
+    static async getDonorByBloodId(blood_type) {
+        try {
+
+            const donors = await DonorModel.find({ blood_type: new mongoose.Types.ObjectId(blood_type) });
+
+            return res.status(200).json(donors);
+        } catch (error) {
+            console.error("Error in getDonorByBloodId:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+
+    //Mail gönder
+    static async sendMail(title, body, blood_type) {
+        try {
+            // Assuming getDonorByBloodId is a synchronous function
+            const donors = await DonorModel.find({ blood_type: new mongoose.Types.ObjectId(blood_type) });  
+            let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'hospitalbloodsystem@gmail.com',
+                    pass: 'qdydhzwharhkfemh'
+                }
+            });
+
+            donors.forEach(donor => {
+                if (donor.iletisim !== null) {
+                    let mailOptions = { 
+                        from: 'hospitalbloodsystem@gmail.com',
+                        to: `${donor.iletisim}`,
+                        subject:`${title}`,
+                        text: `${body}`   
+                    };
+
+                    transporter.sendMail(mailOptions, (err) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log('Mail gönderildi');
+                        }
+                    });
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+
 }
 
 

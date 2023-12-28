@@ -69,6 +69,19 @@ const getDonorByBloodId = async (req, res) => {
     }
 }
 
+const sendMail = async (req, res) => {
+    try {
+        const announcement = req.body;
+        const response = await donorService.sendMail(announcement);
+
+        return res.status(200).json({ message: "Başarılı." });
+    } catch (error) {
+        console.error("Error in sendMail:", error);
+        throw new Error("Failed to send mail.");
+    }
+};
+
+
 module.exports = {
     getAllDonors,
     getDonorById,
@@ -76,4 +89,5 @@ module.exports = {
     updateDonor,
     deleteDonor,
     getDonorByBloodId,
+    sendMail,
 };
