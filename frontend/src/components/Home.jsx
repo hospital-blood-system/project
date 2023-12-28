@@ -17,11 +17,18 @@ function Home(){
         console.error("Announcements request error:", error);
       }
     };
-
+    
     useEffect(() => {
       handleAnnouncements();
     }, []);
     
+    const [showAlert, setShowAlert] = useState(false);
+    const handleButtonClick = () => {
+      setShowAlert(true);
+    };
+
+
+
     return(
         <div>
         <div>
@@ -182,7 +189,15 @@ function Home(){
     <textarea className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
   </div>
 </form>
-<button type="button" className="btn btn-danger">Gönder</button>
+<div>
+      {/* Buton bileşeni */}
+      <button type="button" className="btn btn-danger" onClick={handleButtonClick}>
+        Gönder
+      </button>
+
+      {/* Uyarı gösterme durumuna göre bileşen */}
+      {showAlert && <div className="alert">Gönderildi!</div>}
+    </div>
           </div>
         </div>
       </div>
