@@ -2,6 +2,7 @@ import React  from "react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Logo from "./Logo";
 
 function Register(){
     const [ad, setAd] = useState("");
@@ -61,9 +62,9 @@ function Register(){
           <div className="card mb-0">
             <div className="card-body">
               <a href="./index.html" className="text-nowrap logo-img text-center d-block py-3 w-100">
-                <img src="/img/logos/dark-logo.svg" width={180} alt />
+                <Logo></Logo>
               </a>
-              <p className="text-center">Your Social Campaigns</p>
+              <p className="text-center">Kayıt</p>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="ad" className="form-label">Ad</label>

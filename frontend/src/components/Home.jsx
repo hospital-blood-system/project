@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import ScrollToBottomButton from "./ScrollToBottomButton";
 import ScrollToCenterButton from "./ScrollToCenterButton.jsx";
+import Logo from './Logo.jsx';
 
 function Home(){
 
@@ -40,7 +41,7 @@ function Home(){
             <div className="col-xl-3 col-lg-3">
               <div className="logo">
                 <a href="index.html">
-                  <img src="img/logo.png" alt />
+                  <Logo></Logo>
                 </a>
               </div>
             </div>
@@ -79,7 +80,7 @@ function Home(){
             <div className="slider_text ">
               <span>Hayat Kurtar, Bugün Kan Bağışla!</span>
               <h3>Güç Senin Kanında Saklı: Bağışla, Güç Ver!</h3>
-              <a href="About.html" className="boxed-btn3">Daha Fazla</a>
+              <a href="#" className="boxed-btn3">Daha Fazla</a>
             </div>
           </div>
         </div>

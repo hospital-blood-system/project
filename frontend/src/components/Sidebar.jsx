@@ -1,6 +1,7 @@
 // Sidebar.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Logo from './Logo';
 
 
 const Sidebar = () => {
@@ -8,9 +9,9 @@ const Sidebar = () => {
     <aside className="left-sidebar">
       {/* Sidebar scroll*/}
       <div>
-        <div className="brand-logo d-flex align-items-center justify-content-between">
+        <div className="brand-logo d-flex align-items-center justify-content-center">
           <a href="./index.html" className="text-nowrap logo-img">
-            <img src="/img/logos/dark-logo.svg" width={180} alt="" />
+            <Logo></Logo>
           </a>
           <div className="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i className="ti ti-x fs-8" />

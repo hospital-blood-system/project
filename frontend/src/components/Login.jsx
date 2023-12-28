@@ -2,6 +2,7 @@ import React  from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import Logo from "./Logo";
 
 function Login(){
 
@@ -53,10 +54,10 @@ function Login(){
         <div className="col-md-8 col-lg-6 col-xxl-3">
           <div className="card mb-0">
             <div className="card-body">
-              <a href="./index.html" className="text-nowrap logo-img text-center d-block py-3 w-100">
-                <img src="/img/logos/dark-logo.svg" width={180} alt />
+              <a href="#" className="text-nowrap logo-img text-center d-block py-3 w-100">
+                <Logo></Logo>
               </a>
-              <p className="text-center">Your Social Campaigns</p>
+              <p className="text-center">Giriş</p>
               {error?<p className="text-danger">{error}</p>:null}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
